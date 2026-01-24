@@ -406,7 +406,8 @@ MIT License - See LICENSE file for details
 **Gabriel Isaías Ramírez Melgarejo**
 AWS Community Hero | Founder, Bootcamp Institute SAS
 - GitHub: [@gabanox](https://github.com/gabanox)
-- LinkedIn: [Gabriel Ramírez](https://www.linkedin.com/in/gabriel-ramirez-melgarejo/)
+- LinkedIn: [Gabriel Ramírez](https://www.linkedin.com/in/gabanox/)
+- Twitter/X: [@gabanox_](https://x.com/gabanox_)
 
 ---
 

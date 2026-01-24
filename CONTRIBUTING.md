@@ -123,7 +123,7 @@ Instances of unacceptable behavior may be reported to the project maintainers. A
 Feel free to open an issue with the `question` label or reach out to the maintainer:
 
 - GitHub: [@gabanox](https://github.com/gabanox)
-- Twitter/X: [@gaaborey](https://twitter.com/gaaborey)
+- Twitter/X: [@gabanox_](https://x.com/gabanox_)
 
 ---
 

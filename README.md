@@ -140,8 +140,8 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 AWS Community Hero | Founder, Bootcamp Institute
 
 - GitHub: [@gabanox](https://github.com/gabanox)
-- LinkedIn: [Gabriel Ramírez](https://www.linkedin.com/in/gabriel-ramirez-melgarejo/)
-- Twitter/X: [@gaaborey](https://twitter.com/gaaborey)
+- LinkedIn: [Gabriel Ramírez](https://www.linkedin.com/in/gabanox/)
+- Twitter/X: [@gabanox_](https://x.com/gabanox_)
 
 ---
 

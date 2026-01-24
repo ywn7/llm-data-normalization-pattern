@@ -1486,8 +1486,8 @@ aws cloudformation list-stacks --region us-east-1 --query 'StackSummaries[?Stack
 Did you find this tutorial helpful? Have suggestions for improvements?
 
 - Open an issue on GitHub
-- Tag @gabanox on Twitter/X
-- Connect on LinkedIn: [Gabriel Ramirez](https://www.linkedin.com/in/gabriel-ramirez-melgarejo/)
+- Follow on Twitter/X: [@gabanox_](https://x.com/gabanox_)
+- Connect on LinkedIn: [Gabriel Ramírez](https://www.linkedin.com/in/gabanox/)
 
 ---
 
