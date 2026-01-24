@@ -1,4 +1,4 @@
-> **Language**: [English](./README.md) | [Espanol](./es/README.md)
+> **Language**: [English](./README.md) | [Español](../es/README.md)
 
 # LLM-Powered Data Normalization ETL Pattern
 
@@ -132,11 +132,16 @@ START HERE
 
 ### Visual Diagrams
 
-See [diagrams/](./diagrams/) for:
-- `architecture.png` - Full ETL pipeline with AWS icons
-- `dual-layer.png` - LLM + post-processing architecture
-- `cost-flow.png` - Cost breakdown visualization
-- `sequences.md` - Mermaid sequence diagrams (renders in GitHub)
+#### System Architecture
+![Architecture Diagram](../../diagrams/generated/architecture.png)
+
+#### Dual-Layer Processing
+![Dual Layer Architecture](../../diagrams/generated/dual-layer.png)
+
+#### Cost Flow
+![Cost Flow Diagram](../../diagrams/generated/cost-flow.png)
+
+See [diagrams/](../../diagrams/) for source files and [sequences.md](../../diagrams/sequences.md) for Mermaid diagrams.
 
 ---
 

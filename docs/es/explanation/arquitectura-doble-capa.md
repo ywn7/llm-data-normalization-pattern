@@ -1,6 +1,6 @@
 # Entendiendo: La Arquitectura de Doble Capa
 
-> **Idioma**: [English](../../explanation/dual-layer-architecture.md) | [Español](./arquitectura-doble-capa.md)
+> **Idioma**: [English](../../en/explanation/dual-layer-architecture.md) | [Español](./arquitectura-doble-capa.md)
 
 > **Proposito**: Este documento explica por que combinar LLMs con post-procesamiento deterministico es esencial para la normalizacion de datos de calidad de produccion, no opcional.
 >

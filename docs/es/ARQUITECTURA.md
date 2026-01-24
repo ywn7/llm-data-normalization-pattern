@@ -1,6 +1,6 @@
 # Arquitectura en Profundidad
 
-> **Idioma**: [English](../ARCHITECTURE.md) | [Español](./ARQUITECTURA.md)
+> **Idioma**: [English](../en/ARCHITECTURE.md) | [Español](./ARQUITECTURA.md)
 
 **Patrón ETL de Normalización de Datos con LLM**
 

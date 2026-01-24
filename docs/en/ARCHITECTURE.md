@@ -1,4 +1,4 @@
-> **Language**: [English](./ARCHITECTURE.md) | [Espanol](./es/ARQUITECTURA.md)
+> **Language**: [English](./ARCHITECTURE.md) | [Español](../es/ARQUITECTURA.md)
 
 # Architecture Deep Dive
 

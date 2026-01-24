@@ -1,6 +1,6 @@
 # Documentacion Explicativa
 
-> **Idioma**: [English](../../explanation/README.md) | [Español](./README.md)
+> **Idioma**: [English](../../en/explanation/README.md) | [Español](./README.md)
 
 **Entendiendo el Patron ETL de Normalizacion de Datos con LLM**
 

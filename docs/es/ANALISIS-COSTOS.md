@@ -1,6 +1,6 @@
 # Analisis y Optimizacion de Costos
 
-> **Idioma**: [English](../COST-ANALYSIS.md) | [Español](./ANALISIS-COSTOS.md)
+> **Idioma**: [English](../en/COST-ANALYSIS.md) | [Español](./ANALISIS-COSTOS.md)
 
 **Desglose detallado de costos de normalizacion LLM y estrategias para minimizar gastos**
 

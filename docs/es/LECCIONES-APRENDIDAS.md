@@ -1,6 +1,6 @@
 # Lecciones Aprendidas de Produccion
 
-> **Idioma**: [English](../LESSONS-LEARNED.md) | [Español](./LECCIONES-APRENDIDAS.md)
+> **Idioma**: [English](../en/LESSONS-LEARNED.md) | [Español](./LECCIONES-APRENDIDAS.md)
 
 **Perspectivas del mundo real de implementar normalizacion de datos con LLM a escala**
 

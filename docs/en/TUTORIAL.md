@@ -1,4 +1,4 @@
-> **Language**: [English](./TUTORIAL.md) | [Espanol](./es/TUTORIAL.md)
+> **Language**: [English](./TUTORIAL.md) | [Español](../es/TUTORIAL.md)
 
 # Building Your First LLM-Powered Data Normalization Pipeline
 

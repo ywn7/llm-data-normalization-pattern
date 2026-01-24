@@ -1,6 +1,6 @@
 # Construyendo Tu Primer Pipeline de Normalizacion de Datos con LLM
 
-> **Idioma**: [English](../TUTORIAL.md) | [Español](./TUTORIAL.md)
+> **Idioma**: [English](../en/TUTORIAL.md) | [Español](./TUTORIAL.md)
 
 **Un tutorial practico: Transforma datos de usuario desordenados en registros limpios y estandarizados usando Claude Haiku y AWS**
 

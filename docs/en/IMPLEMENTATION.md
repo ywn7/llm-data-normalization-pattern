@@ -1,4 +1,4 @@
-> **Language**: [English](./IMPLEMENTATION.md) | [Espanol](./es/IMPLEMENTACION.md)
+> **Language**: [English](./IMPLEMENTATION.md) | [Español](../es/IMPLEMENTACION.md)
 
 # Implementation Guide
 

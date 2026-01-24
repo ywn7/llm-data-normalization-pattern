@@ -1,4 +1,4 @@
-> **Language**: [English](./STATISTICAL-VALIDATION.md) | [Espanol](./es/VALIDACION-ESTADISTICA.md)
+> **Language**: [English](./STATISTICAL-VALIDATION.md) | [Español](../es/VALIDACION-ESTADISTICA.md)
 
 # Statistical Validation Methodology
 

@@ -1,4 +1,4 @@
-> **Language**: [English](./COST-ANALYSIS.md) | [Espanol](./es/ANALISIS-COSTOS.md)
+> **Language**: [English](./COST-ANALYSIS.md) | [Español](../es/ANALISIS-COSTOS.md)
 
 # Cost Analysis and Optimization
 

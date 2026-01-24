@@ -1,4 +1,4 @@
-> **Language**: [English](./why-llm-for-normalization.md) | [Espanol](../es/explanation/por-que-llm-para-normalizacion.md)
+> **Language**: [English](./why-llm-for-normalization.md) | [Español](../../es/explanation/por-que-llm-para-normalizacion.md)
 
 # Understanding: Why LLMs for Data Normalization?
 

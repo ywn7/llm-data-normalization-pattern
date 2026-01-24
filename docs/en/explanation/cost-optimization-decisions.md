@@ -1,4 +1,4 @@
-> **Language**: [English](./cost-optimization-decisions.md) | [Espanol](../es/explanation/decisiones-optimizacion-costos.md)
+> **Language**: [English](./cost-optimization-decisions.md) | [Español](../../es/explanation/decisiones-optimizacion-costos.md)
 
 # Understanding: Cost Optimization Decisions
 

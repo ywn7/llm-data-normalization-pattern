@@ -1,4 +1,4 @@
-> **Language**: [English](./dual-layer-architecture.md) | [Espanol](../es/explanation/arquitectura-doble-capa.md)
+> **Language**: [English](./dual-layer-architecture.md) | [Español](../../es/explanation/arquitectura-doble-capa.md)
 
 # Understanding: The Dual-Layer Architecture
 

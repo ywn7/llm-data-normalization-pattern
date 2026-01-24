@@ -1,4 +1,4 @@
-> **Language**: [English](./LESSONS-LEARNED.md) | [Espanol](./es/LECCIONES-APRENDIDAS.md)
+> **Language**: [English](./LESSONS-LEARNED.md) | [Español](../es/LECCIONES-APRENDIDAS.md)
 
 # Lessons Learned from Production
 

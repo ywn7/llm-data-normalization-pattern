@@ -1,6 +1,6 @@
 # Guía de Implementación
 
-> **Idioma**: [English](../IMPLEMENTATION.md) | [Español](./IMPLEMENTACION.md)
+> **Idioma**: [English](../en/IMPLEMENTATION.md) | [Español](./IMPLEMENTACION.md)
 
 **Guía paso a paso para implementar el Patrón ETL de Normalización de Datos con LLM**
 

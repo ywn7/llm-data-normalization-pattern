@@ -1,4 +1,4 @@
-> **Language**: [English](./statistical-quality-control.md) | [Espanol](../es/explanation/control-calidad-estadistico.md)
+> **Language**: [English](./statistical-quality-control.md) | [Español](../../es/explanation/control-calidad-estadistico.md)
 
 # Understanding: Statistical Quality Control for LLM Systems
 

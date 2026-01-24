@@ -1,6 +1,6 @@
 # Entendiendo: Decisiones de Optimizacion de Costos
 
-> **Idioma**: [English](../../explanation/cost-optimization-decisions.md) | [Español](./decisiones-optimizacion-costos.md)
+> **Idioma**: [English](../../en/explanation/cost-optimization-decisions.md) | [Español](./decisiones-optimizacion-costos.md)
 
 > **Proposito**: Este documento explica el razonamiento economico detras de elegir Haiku sobre Sonnet, procesamiento por lotes sobre tiempo real, y otros trade-offs de costo/calidad en sistemas LLM de produccion.
 >

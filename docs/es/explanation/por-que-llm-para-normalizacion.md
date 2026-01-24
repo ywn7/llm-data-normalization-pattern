@@ -1,6 +1,6 @@
 # Entendiendo: Por Que LLMs para Normalizacion de Datos?
 
-> **Idioma**: [English](../../explanation/why-llm-for-normalization.md) | [Español](./por-que-llm-para-normalizacion.md)
+> **Idioma**: [English](../../en/explanation/why-llm-for-normalization.md) | [Español](./por-que-llm-para-normalizacion.md)
 
 > **Proposito**: Este documento explica por que los Modelos de Lenguaje Grande son unicamente adecuados para normalizar datos de usuario desordenados, y por que los enfoques tradicionales se quedan cortos.
 >

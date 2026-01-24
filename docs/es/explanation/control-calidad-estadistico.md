@@ -1,6 +1,6 @@
 # Entendiendo: Control de Calidad Estadistico para Sistemas LLM
 
-> **Idioma**: [English](../../explanation/statistical-quality-control.md) | [Español](./control-calidad-estadistico.md)
+> **Idioma**: [English](../../en/explanation/statistical-quality-control.md) | [Español](./control-calidad-estadistico.md)
 
 > **Proposito**: Este documento explica por que tratar la calidad de salida del LLM como un proceso estadistico - no una verificacion binaria de pasa/falla - previene fallos silenciosos y habilita sistemas auto-reparables.
 >

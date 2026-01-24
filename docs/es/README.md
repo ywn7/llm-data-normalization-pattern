@@ -1,6 +1,6 @@
 # Patrón ETL de Normalización de Datos con LLM
 
-> **Idioma**: [English](../README.md) | [Español](./README.md)
+> **Idioma**: [English](../en/README.md) | [Español](./README.md)
 
 **Un patrón serverless listo para producción para normalización inteligente de datos usando Claude Haiku a través de AWS Bedrock**
 
@@ -134,11 +134,16 @@ EMPIEZA AQUÍ
 
 ### Diagramas Visuales
 
-Ver [diagrams/](../diagrams/) para:
-- `architecture.png` - Pipeline ETL completo con íconos AWS
-- `dual-layer.png` - Arquitectura LLM + post-procesamiento
-- `cost-flow.png` - Visualización de desglose de costos
-- `sequences.md` - Diagramas de secuencia Mermaid (renderiza en GitHub)
+#### Arquitectura del Sistema
+![Diagrama de Arquitectura](../../diagrams/generated/architecture.png)
+
+#### Procesamiento de Doble Capa
+![Arquitectura de Doble Capa](../../diagrams/generated/dual-layer.png)
+
+#### Flujo de Costos
+![Diagrama de Flujo de Costos](../../diagrams/generated/cost-flow.png)
+
+Ver [diagrams/](../../diagrams/) para archivos fuente y [sequences.md](../../diagrams/sequences.md) para diagramas Mermaid.
 
 ---
 

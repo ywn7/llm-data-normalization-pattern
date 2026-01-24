@@ -1,4 +1,4 @@
-> **Language**: [English](./README.md) | [Espanol](../es/explanation/README.md)
+> **Language**: [English](./README.md) | [Español](../../es/explanation/README.md)
 
 # Explanation Documentation
 
