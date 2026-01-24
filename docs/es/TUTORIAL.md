@@ -1436,7 +1436,7 @@ Reemplaza los campos del formulario colombiano con los tuyos:
 
 Lee la documentación completa:
 - **ARQUITECTURA.md**: Diseno detallado del sistema
-- **validación-ESTADISTICA.md**: Metricas avanzadas de calidad
+- **VALIDACION-ESTADISTICA.md**: Métricas avanzadas de calidad
 - **LECCIONES-APRENDIDAS.md**: Insights de producción y trampas
 - **ANALISIS-COSTOS.md**: Estrategias de optimización de costos
 

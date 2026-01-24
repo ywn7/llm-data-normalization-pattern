@@ -87,9 +87,9 @@ Este patrón es ideal para:
 | Tu Objetivo | Empieza Con | Luego Lee |
 |-------------|-------------|-----------|
 | **Entender el patrón** (30 min) | Este README | [Arquitectura](./ARQUITECTURA.md) → [Análisis de Costos](./ANALISIS-COSTOS.md) |
-| **Implementarlo tú mismo** (2-3 hrs) | Este README | [Tutorial](./TUTORIAL.md) ⭐ → [Implementación](./implementación.md) |
+| **Implementarlo tú mismo** (2-3 hrs) | Este README | [Tutorial](./TUTORIAL.md) ⭐ → [Implementación](./IMPLEMENTACION.md) |
 | **Entender el "por qué"** (2 hrs) | Este README | directorio [explanation/](./explanation/) |
-| **Validar calidad** (1 hr) | Este README | [Validación Estadística](./validación-ESTADISTICA.md) |
+| **Validar calidad** (1 hr) | Este README | [Validación Estadística](./VALIDACION-ESTADISTICA.md) |
 | **Evitar errores** (30 min) | Este README | [Lecciones Aprendidas](./LECCIONES-APRENDIDAS.md) |
 
 ### Mapa de Documentación
@@ -127,9 +127,9 @@ EMPIEZA AQUÍ
 
 ### Por Rol
 
-- **Desarrolladores**: README → [Tutorial](./TUTORIAL.md) → [Implementación](./implementación.md)
+- **Desarrolladores**: README → [Tutorial](./TUTORIAL.md) → [Implementación](./IMPLEMENTACION.md)
 - **Arquitectos**: README → [explanation/](./explanation/) → [Arquitectura](./ARQUITECTURA.md)
-- **Ingenieros de Datos**: README → [Validación Estadística](./validación-ESTADISTICA.md)
+- **Ingenieros de Datos**: README → [Validación Estadística](./VALIDACION-ESTADISTICA.md)
 - **Gerentes/PMs**: README → [Análisis de Costos](./ANALISIS-COSTOS.md)
 
 ### Diagramas Visuales
@@ -386,8 +386,8 @@ Post-proceso:   "Cra. . 15 # 100 - 25"  ← Doble punto insertado!
 ## Próximos Pasos
 
 - **[ARQUITECTURA.md](./ARQUITECTURA.md)**: Profundización en diseño del sistema
-- **[implementación.md](./implementación.md)**: Guía de implementación paso a paso
-- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Detalles de metodología estadística
+- **[IMPLEMENTACION.md](./IMPLEMENTACION.md)**: Guía de implementación paso a paso
+- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Detalles de metodología estadística
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción y errores comunes
 - **[ANALISIS-COSTOS.md](./ANALISIS-COSTOS.md)**: Desglose detallado de costos y optimización
 

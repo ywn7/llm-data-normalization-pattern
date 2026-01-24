@@ -1,6 +1,6 @@
 # Metodología de Validación Estadística
 
-> **Idioma**: [English](../en/STATISTICAL-VALIDATION.md) | [Español](./validación-ESTADISTICA.md)
+> **Idioma**: [English](../en/STATISTICAL-VALIDATION.md) | [Español](./VALIDACION-ESTADISTICA.md)
 
 **Usando intervalos de confianza para medir calidad de normalización LLM y detectar bugs**
 

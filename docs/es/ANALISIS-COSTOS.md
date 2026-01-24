@@ -488,8 +488,8 @@ CostAlarm:
 ## Próximos Pasos
 
 - **[README.md](./README.md)**: Vision general del patron e inicio rapido
-- **[implementación.md](./implementación.md)**: Guia de configuración paso a paso
-- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Medicion de calidad
+- **[IMPLEMENTACION.md](./IMPLEMENTACION.md)**: Guía de configuración paso a paso
+- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Medición de calidad
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción
 
 ---

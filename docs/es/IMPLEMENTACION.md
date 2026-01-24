@@ -1,6 +1,6 @@
 # Guía de Implementación
 
-> **Idioma**: [English](../en/IMPLEMENTATION.md) | [Español](./implementación.md)
+> **Idioma**: [English](../en/IMPLEMENTATION.md) | [Español](./IMPLEMENTACION.md)
 
 **Guía paso a paso para implementar el Patrón ETL de Normalización de Datos con LLM**
 
@@ -1012,7 +1012,7 @@ expect(result.ciudad).toMatch(/^[A-Z]/);        // Siempre capitalizado
 
 ## Próximos Pasos
 
-- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Medir calidad de normalización
+- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Medir calidad de normalización
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción
 - **[ANALISIS-COSTOS.md](./ANALISIS-COSTOS.md)**: Estrategias de optimización de costos
 

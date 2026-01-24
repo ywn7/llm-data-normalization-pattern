@@ -629,8 +629,8 @@ await Promise.all(
 
 ## Próximos Pasos
 
-- **[implementación.md](./implementación.md)**: Recorrido de código paso a paso
-- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Métricas de calidad y detección de bugs
+- **[IMPLEMENTACION.md](./IMPLEMENTACION.md)**: Recorrido de código paso a paso
+- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Métricas de calidad y detección de bugs
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción
 
 ---
