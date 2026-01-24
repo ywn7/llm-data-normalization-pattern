@@ -1,18 +1,18 @@
 # Metodología de Validación Estadística
 
-> **Idioma**: [English](../en/STATISTICAL-VALIDATION.md) | [Español](./VALIDACION-ESTADISTICA.md)
+> **Idioma**: [English](../en/STATISTICAL-VALIDATION.md) | [Español](./validación-ESTADISTICA.md)
 
 **Usando intervalos de confianza para medir calidad de normalización LLM y detectar bugs**
 
-## Vision General
+## Visión General
 
 Los LLMs son sistemas probabilísticos. Incluso con `temperature=0`, las salidas pueden variar debido a:
-- Actualizaciones del modelo por el proveedor
+- actualizaciónes del modelo por el proveedor
 - Cambios sutiles en prompts
 - Casos borde en datos de entrada
 - **Bugs sistemáticos en post-procesamiento**
 
-Las pruebas de software tradicionales (unitarias, integracion) son insuficientes para pipelines LLM. Necesitas **validación estadística** para:
+Las pruebas de software tradicionales (unitarias, integración) son insuficientes para pipelines LLM. Necesitas **validación estadística** para:
 
 1. Medir calidad de normalización objetivamente
 2. Detectar deriva de calidad en el tiempo
@@ -23,19 +23,19 @@ Las pruebas de software tradicionales (unitarias, integracion) son insuficientes
 
 ### 1. Cobertura (Tasa de Exito)
 
-**Definicion**: Porcentaje de campos normalizados exitosamente sin errores.
+**Definición**: Porcentaje de campos normalizados exitosamente sin errores.
 
 **Formula**:
 ```
-Cobertura = (Normalizaciones Exitosas / Total Campos) × 100
+Cobertura = (normalizaciónes Exitosas / Total Campos) × 100
 ```
 
-**Ejemplo** (Produccion):
+**Ejemplo** (Producción):
 ```
 Cobertura = 4,246 / 4,280 = 99.2%
 ```
 
-**Interpretacion**:
+**Interpretación**:
 - **>95%**: Excelente - LLM maneja casi todos los casos
 - **90-95%**: Bueno - Casos borde menores fallando
 - **<90%**: Pobre - Investigar problemas de prompt/post-procesamiento
@@ -44,40 +44,40 @@ Cobertura = 4,246 / 4,280 = 99.2%
 
 ### 2. Tasa de Mejora
 
-**Definicion**: Porcentaje de campos que requirieron cambios (no estaban ya normalizados).
+**Definición**: Porcentaje de campos que requirieron cambios (no estaban ya normalizados).
 
 **Formula**:
 ```
 Tasa de Mejora = (Campos Cambiados / Total Campos) × 100
 ```
 
-**Ejemplo** (Produccion):
+**Ejemplo** (Producción):
 ```
 Tasa de Mejora = 3,013 / 4,280 = 70.4%
 ```
 
-**Interpretacion**:
+**Interpretación**:
 - **60-80%**: Esperado para datos enviados por usuarios (mucha variacion)
 - **<30%**: Datos ya limpios O normalización no suficientemente agresiva
 - **>90%**: Sospechoso - posible bug causando sobre-normalización
 
-**Por que importa**: Valida que la normalización realmente esta haciendo trabajo util.
+**Por que importa**: Valida que la normalización realmente esta haciendo trabajo útil.
 
 ### 3. Intervalo de Confianza (95%)
 
-**Definicion**: Rango estadístico dentro del cual yace la tasa de mejora real.
+**Definición**: Rango estadístico dentro del cual yace la tasa de mejora real.
 
-**Formula** (proporcion binomial):
+**Formula** (proporción binomial):
 ```
 IC = p ± z * √(p(1-p)/n)
 
 Donde:
-  p = proporcion muestral (tasa de mejora)
+  p = proporción muestral (tasa de mejora)
   z = 1.96 (para 95% de confianza)
-  n = tamano de muestra (total campos)
+  n = tamaño de muestra (total campos)
 ```
 
-**Ejemplo** (Produccion):
+**Ejemplo** (Producción):
 ```
 p = 0.704 (70.4%)
 n = 4,280
@@ -88,15 +88,15 @@ IC = 70.4% ± 1.4%
    = [69.0%, 71.8%]
 ```
 
-**Interpretacion**: Podemos decir con 95% de confianza que la tasa de mejora real esta entre 69.0% y 71.8%.
+**Interpretación**: Podemos decir con 95% de confianza que la tasa de mejora real esta entre 69.0% y 71.8%.
 
 **Por que importa**: Proporciona rigor estadístico para reportes a stakeholders. "70% de mejora" suena vago; "70% ± 1.4% (IC 95%)" suena autoritativo.
 
-## Resultados de Produccion (Datos Reales)
+## Resultados de Producción (Datos Reales)
 
-### Estadisticas Generales
+### Estadísticas Generales
 
-| Metrica | Valor | IC 95% |
+| Métrica | Valor | IC 95% |
 |--------|-------|--------|
 | **Total Prospectos** | 652 | - |
 | **Total Campos** | 4,280 (652 × 7 campos - datos faltantes) | - |
@@ -106,27 +106,27 @@ IC = 70.4% ± 1.4%
 | **Tasa de Mejora** | 70.4% | [69.0%, 71.8%] |
 | **Errores** | 34 (0.8%) | - |
 
-### Analisis Por Campo
+### Análisis Por Campo
 
-| Campo | Total | Normalizados | Tasa de Mejora | IC 95% | Interpretacion |
+| Campo | Total | Normalizados | Tasa de Mejora | IC 95% | Interpretación |
 |-------|-------|------------|------------------|--------|----------------|
 | `nombres` | 652 | 647 | 3.8% (25/652) | [2.4%, 5.2%] | ✅ Mayormente ya formateados |
 | `apellidos` | 652 | 648 | 5.2% (34/652) | [3.6%, 6.8%] | ✅ Mayormente ya formateados |
 | `ciudad` | 652 | 650 | 55.8% (364/652) | [52.0%, 59.6%] | ✅ Esperado (muchas variantes) |
-| `direccion` | 652 | 643 | **65.7% (428/652)** | [62.0%, 69.4%] | ⚠️ **Anomalia detectada** |
+| `dirección` | 652 | 643 | **65.7% (428/652)** | [62.0%, 69.4%] | ⚠️ **Anomalía detectada** |
 | `nivelEducativo` | 648 | 645 | 78.4% (507/648) | [75.2%, 81.6%] | ✅ Esperado (texto libre) |
 | `ocupacionActual` | 612 | 605 | 82.5% (505/612) | [79.5%, 85.5%] | ✅ Esperado (abreviaciones) |
-| `empresa` | 612 | 608 | 72.9% (444/612) | [69.4%, 76.4%] | ✅ Esperado (capitalizacion) |
+| `empresa` | 612 | 608 | 72.9% (444/612) | [69.4%, 76.4%] | ✅ Esperado (capitalización) |
 
-### Deteccion de Anomalias: El Bug del Doble Punto
+### detección de Anomalías: El Bug del Doble Punto
 
-**Senal de alerta detectada**: La tasa de mejora de `direccion` (65.7%) era inusualmente alta para un campo estructurado.
+**Señal de alerta detectada**: La tasa de mejora de `dirección` (65.7%) era inusualmente alta para un campo estructurado.
 
-**Comportamiento esperado**: Direcciones deberian tener ~15-20% de mejora (corrigiendo "CRA 15 NO 100 25" → "Cra. 15 # 100 - 25").
+**Comportamiento esperado**: direcciónes deberian tener ~15-20% de mejora (corrigiendo "CRA 15 NO 100 25" → "Cra. 15 # 100 - 25").
 
-**Comportamiento real**: 65.7% de mejora sugiere que el post-procesamiento esta cambiando direcciones ya formateadas.
+**Comportamiento real**: 65.7% de mejora sugiere que el post-procesamiento esta cambiando direcciónes ya formateadas.
 
-## Caso de Estudio de Deteccion de Bug
+## Caso de Estudio de detección de Bug
 
 ### Proceso de Descubrimiento
 
@@ -137,7 +137,7 @@ const stats = {
   nombres: { total: 652, changed: 25, rate: 3.8% },
   apellidos: { total: 652, changed: 34, rate: 5.2% },
   ciudad: { total: 652, changed: 364, rate: 55.8% },
-  direccion: { total: 652, changed: 428, rate: 65.7% },  // ← ¡Outlier!
+  dirección: { total: 652, changed: 428, rate: 65.7% },  // ← ¡Outlier!
   nivelEducativo: { total: 648, changed: 507, rate: 78.4% },
   ocupacionActual: { total: 612, changed: 505, rate: 82.5% },
   empresa: { total: 612, changed: 444, rate: 72.9% }
@@ -150,16 +150,16 @@ const stats = {
 Tasas de mejora esperadas:
 - Nombres: 0-10% (mayormente ya formateados)
 - Ciudades: 50-60% (muchas variantes: "bogota", "BOGOTA", etc.)
-- Direcciones: 15-25% (variaciones de formato estructurado)  ← Esperado
+- direcciónes: 15-25% (variaciones de formato estructurado)  ← Esperado
 - Educacion/Trabajo: 70-85% (texto libre con abreviaciones)
 
 Real:
-- Direcciones: 65.7%  ← ¡3x mas alto que lo esperado!
+- direcciónes: 65.7%  ← ¡3x mas alto que lo esperado!
 ```
 
 **Paso 3**: Revision manual por muestreo
 
-Muestrear aleatoriamente 20 direcciones de `normalizedData`:
+Muestrear aleatoriamente 20 direcciónes de `normalizedData`:
 
 ```javascript
 // Antes (original):
@@ -171,7 +171,7 @@ Muestrear aleatoriamente 20 direcciones de `normalizedData`:
 
 Encontrado el bug en **18 de 20 muestras** (90% afectado).
 
-**Paso 4**: Analisis de causa raiz
+**Paso 4**: Análisis de causa raiz
 
 ```javascript
 // En prompts.js - Codigo buggy original:
@@ -211,29 +211,29 @@ aws lambda invoke \
   response.json
 
 # Nuevas estadísticas:
-# tasa de mejora direccion: 18.2% (119/652)
+# tasa de mejora dirección: 18.2% (119/652)
 # ✅ Dentro del rango esperado 15-25%
 ```
 
-### Confirmacion Estadistica
+### Confirmación Estadistica
 
-**Antes de la correccion**:
+**Antes de la corrección**:
 ```
 Tasa de Mejora = 65.7% ± 3.7%
 Z-score = (65.7 - 20) / 3.7 = 12.3  (¡altamente significativo!)
 ```
 
-**Despues de la correccion**:
+**Despues de la corrección**:
 ```
 Tasa de Mejora = 18.2% ± 3.0%
 Z-score = (18.2 - 20) / 3.0 = -0.6  (dentro del rango esperado)
 ```
 
-La correccion llevo la tasa de mejora de **12 desviaciones estandar por encima de lo esperado** a **dentro de 1 desviacion estandar** - confirmando estadísticamente que el bug fue resuelto.
+La corrección llevo la tasa de mejora de **12 desviaciones estandar por encima de lo esperado** a **dentro de 1 desviacion estandar** - confirmando estadísticamente que el bug fue resuelto.
 
-## Como Implementar Validacion Estadistica
+## Como Implementar Validación Estadistica
 
-### 1. Rastrear Métricas de Normalizacion
+### 1. Rastrear Métricas de normalización
 
 Agregar al handler Lambda:
 
@@ -333,7 +333,7 @@ function generateStatisticalReport(metrics) {
 }
 ```
 
-### 3. Detectar Anomalias
+### 3. Detectar Anomalías
 
 ```javascript
 function detectAnomalies(report) {
@@ -344,7 +344,7 @@ function detectAnomalies(report) {
     nombres: { min: 0, max: 0.10 },
     apellidos: { min: 0, max: 0.10 },
     ciudad: { min: 0.40, max: 0.70 },
-    direccion: { min: 0.10, max: 0.30 },  // ← Restriccion clave
+    dirección: { min: 0.10, max: 0.30 },  // ← Restriccion clave
     nivelEducativo: { min: 0.60, max: 0.90 },
     ocupacionActual: { min: 0.70, max: 0.90 },
     empresa: { min: 0.60, max: 0.85 }
@@ -370,18 +370,18 @@ function detectAnomalies(report) {
 }
 ```
 
-### 4. Alertar sobre Anomalias
+### 4. Alertar sobre Anomalías
 
 ```javascript
 if (anomalies.length > 0) {
-  console.error('Anomalias detectadas:', anomalies);
+  console.error('Anomalías detectadas:', anomalies);
 
   // Enviar notificacion SNS
   await sns.publish({
     TopicArn: process.env.ALERT_TOPIC_ARN,
-    Subject: 'Anomalia de Calidad de Normalizacion Detectada',
+    Subject: 'Anomalía de Calidad de normalización Detectada',
     Message: JSON.stringify({
-      message: 'Analisis estadístico detecto tasas de mejora inesperadas',
+      message: 'Análisis estadístico detecto tasas de mejora inesperadas',
       anomalies,
       action: 'Revision manual requerida'
     }, null, 2)
@@ -399,9 +399,9 @@ Tasa de mejora: 50% (10/20)
 IC 95%: [27.1%, 72.9%]
 ```
 
-**Interpretacion**: No hay suficientes datos para estar confiados. Podria estar en cualquier lugar desde 27% a 73%.
+**Interpretación**: No hay suficientes datos para estar confiados. Podria estar en cualquier lugar desde 27% a 73%.
 
-**Accion**: Recolectar mas datos antes de sacar conclusiones.
+**Acción**: Recolectar mas datos antes de sacar conclusiones.
 
 ### Ejemplo 2: Intervalo Estrecho (Alta Confianza)
 
@@ -411,50 +411,50 @@ Tasa de mejora: 70.4% (458/650)
 IC 95%: [67.0%, 73.8%]
 ```
 
-**Interpretacion**: Alta confianza de que la tasa real es alrededor de 70%.
+**Interpretación**: Alta confianza de que la tasa real es alrededor de 70%.
 
-**Accion**: Metrica confiable para reportar a stakeholders.
+**Acción**: Métrica confiable para reportar a stakeholders.
 
 ### Ejemplo 3: Intervalos Superpuestos (Sin Diferencia Significativa)
 
 ```
-Antes de optimizacion: 70.4% ± 1.8% = [68.6%, 72.2%]
-Despues de optimizacion: 72.1% ± 1.9% = [70.2%, 74.0%]
+Antes de optimización: 70.4% ± 1.8% = [68.6%, 72.2%]
+Despues de optimización: 72.1% ± 1.9% = [70.2%, 74.0%]
 ```
 
-**Interpretacion**: Intervalos se superponen → diferencia NO es estadísticamente significativa.
+**Interpretación**: Intervalos se superponen → diferencia NO es estadísticamente significativa.
 
-**Accion**: No reclamar mejora a menos que mas datos muestren separacion.
+**Acción**: No reclamar mejora a menos que mas datos muestren separacion.
 
-### Ejemplo 4: Intervalos Sin Superposicion (Diferencia Significativa)
+### Ejemplo 4: Intervalos Sin Superposición (Diferencia Significativa)
 
 ```
-Antes de correccion de bug: 65.7% ± 3.7% = [62.0%, 69.4%]
-Despues de correccion de bug: 18.2% ± 3.0% = [15.2%, 21.2%]
+Antes de corrección de bug: 65.7% ± 3.7% = [62.0%, 69.4%]
+Despues de corrección de bug: 18.2% ± 3.0% = [15.2%, 21.2%]
 ```
 
-**Interpretacion**: Sin superposicion → diferencia es estadísticamente significativa.
+**Interpretación**: Sin superposicion → diferencia es estadísticamente significativa.
 
-**Accion**: Correccion de bug confirmada efectiva con 95% de confianza.
+**Acción**: corrección de bug confirmada efectiva con 95% de confianza.
 
 ## Cuando Re-Normalizar
 
-### Disparadores para Re-Normalizacion
+### Disparadores para Re-normalización
 
 1. **Cambios de prompt**: Nuevos ejemplos, ajustes de reglas
-2. **Actualizaciones de modelo**: Actualizacion de version Claude Haiku
-3. **Correcciones de bugs**: Cambios en pipeline de post-procesamiento (como correccion de doble punto)
+2. **actualizaciónes de modelo**: actualización de version Claude Haiku
+3. **correcciónes de bugs**: Cambios en pipeline de post-procesamiento (como corrección de doble punto)
 4. **Deriva de calidad**: Cobertura cae por debajo de 95%
 5. **Programado**: Cada 7 dias (TTL) para datos frescos
 
-### Estrategia de Re-Normalizacion
+### Estrategia de Re-normalización
 
 ```javascript
 // Forzar re-normalización via API
 POST /admin/normalize-leads
 {
   "forceAll": true,
-  "reason": "Correccion de bug: doble punto en direcciones"
+  "reason": "corrección de bug: doble punto en direcciónes"
 }
 
 // Respuesta:
@@ -470,7 +470,7 @@ POST /admin/normalize-leads
 }
 ```
 
-## Mejores Practicas
+## Mejores Prácticas
 
 ### 1. Siempre Reportar Intervalos de Confianza
 
@@ -480,7 +480,7 @@ POST /admin/normalize-leads
 ### 2. Rastrear Métricas en el Tiempo
 
 ```javascript
-// Almacenar en DynamoDB para analisis de tendencias
+// Almacenar en DynamoDB para análisis de tendencias
 {
   runId: "2026-01-24T07:00:00Z",
   coverage: 0.992,
@@ -493,17 +493,17 @@ POST /admin/normalize-leads
 
 ### 3. Establecer Rangos Esperados
 
-Definir rangos aceptables por campo basado en caracteristicas de datos:
+Definir rangos aceptables por campo basado en características de datos:
 
 ```javascript
 const EXPECTED_RANGES = {
   nombres: { min: 0.00, max: 0.10 },  // Nombres ya formateados
   ciudad: { min: 0.40, max: 0.70 },   // Muchas variantes de ciudades
-  direccion: { min: 0.10, max: 0.30 } // Formato estructurado
+  dirección: { min: 0.10, max: 0.30 } // Formato estructurado
 };
 ```
 
-### 4. Usar Z-Scores para Deteccion de Outliers
+### 4. Usar Z-Scores para detección de Outliers
 
 ```javascript
 function calculateZScore(actual, expected, sampleSize) {
@@ -515,7 +515,7 @@ function calculateZScore(actual, expected, sampleSize) {
 }
 
 // Ejemplo:
-// direccion: actual = 0.657, expected = [0.10, 0.30]
+// dirección: actual = 0.657, expected = [0.10, 0.30]
 // z = (0.657 - 0.20) / 0.05 = 9.14 (¡altamente inusual!)
 ```
 
@@ -524,16 +524,16 @@ function calculateZScore(actual, expected, sampleSize) {
 | Tamano Muestra | Ancho de Intervalo de Confianza | Caso de Uso |
 |-------------|---------------------------|----------|
 | 20-50 | ±10-15% | Pruebas piloto |
-| 100-500 | ±5-10% | Validacion de desarrollo |
-| 500-1000 | ±2-5% | Monitoreo de produccion |
-| >1000 | <±2% | Reportes de alta precision |
+| 100-500 | ±5-10% | Validación de desarrollo |
+| 500-1000 | ±2-5% | Monitoreo de producción |
+| >1000 | <±2% | Reportes de alta precisión |
 
 ## Reportando a Stakeholders
 
 ### Template de Resumen Ejecutivo
 
 ```markdown
-## Reporte de Calidad de Normalizacion de Datos
+## Reporte de Calidad de normalización de Datos
 **Periodo**: Enero 1-24, 2026
 
 ### Rendimiento General
@@ -541,43 +541,43 @@ function calculateZScore(actual, expected, sampleSize) {
 - **Tasa de Exito**: 99.2% (IC 95%: 98.8%-99.5%)
 - **Tasa de Mejora**: 70.4% (IC 95%: 69.0%-71.8%)
 
-### Interpretacion
+### Interpretación
 Con 95% de confianza, podemos afirmar que:
 - Al menos 98.8% de los datos se normalizan exitosamente
 - Entre 69.0% y 71.8% de campos requirieron normalización
 
 ### Métricas de Calidad
-| Metrica | Objetivo | Real | Estado |
+| Métrica | Objetivo | Real | Estado |
 |--------|--------|--------|--------|
 | Cobertura | >95% | 99.2% ± 0.4% | ✅ Excede |
 | Tasa de Mejora | 60-80% | 70.4% ± 1.4% | ✅ En Objetivo |
 | Tasa de Error | <5% | 0.8% ± 0.3% | ✅ Excede |
 
-### Anomalias Detectadas
-1. **Normalizacion de direcciones** (Ene 23): Tasa de mejora 3x lo esperado
+### Anomalías Detectadas
+1. **normalización de direcciónes** (Ene 23): Tasa de mejora 3x lo esperado
    - **Causa**: Bug de doble punto en post-procesamiento
-   - **Resolucion**: Patron regex actualizado, todos los registros re-normalizados
-   - **Validacion**: Nueva tasa 18.2% ± 3.0% (dentro de esperado 15-25%)
+   - **Resolución**: Patron regex actualizado, todos los registros re-normalizados
+   - **Validación**: Nueva tasa 18.2% ± 3.0% (dentro de esperado 15-25%)
 ```
 
-## Conclusion
+## Conclusión
 
 La validación estadística transforma la normalización LLM de una "caja negra" a un **proceso medible y confiable**.
 
-Conclusiones clave:
+Conclusiónes clave:
 1. **Siempre usar intervalos de confianza** para reportes
 2. **Rastrear metricas por campo** para detectar anomalias
-3. **Establecer rangos esperados** basados en caracteristicas de datos
-4. **Re-normalizar cuando sea necesario** (bugs, actualizaciones de modelo, cambios de prompt)
+3. **Establecer rangos esperados** basados en características de datos
+4. **Re-normalizar cuando sea necesario** (bugs, actualizaciónes de modelo, cambios de prompt)
 5. **Monitorear tendencias en el tiempo** para detectar deriva de calidad temprano
 
-El descubrimiento del bug de doble punto prueba el valor de este enfoque: sin analisis estadístico, podriamos nunca haber notado que 65.7% de las direcciones estaban siendo corrompidas.
+El descubrimiento del bug de doble punto prueba el valor de este enfoque: sin análisis estadístico, podriamos nunca haber notado que 65.7% de las direcciónes estaban siendo corrompidas.
 
-## Proximos Pasos
+## Próximos Pasos
 
-- **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de produccion y errores comunes
-- **[ANALISIS-COSTOS.md](./ANALISIS-COSTOS.md)**: Estrategias de optimizacion de costos
+- **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción y errores comunes
+- **[ANALISIS-COSTOS.md](./ANALISIS-COSTOS.md)**: Estrategias de optimización de costos
 
 ---
 
-**Ultima Actualizacion**: 24 de Enero, 2026
+**Última Actualización**: 24 de Enero, 2026

@@ -1,73 +1,73 @@
-# Construyendo Tu Primer Pipeline de Normalizacion de Datos con LLM
+# Construyendo Tu Primer Pipeline de Normalización de Datos con LLM
 
 > **Idioma**: [English](../en/TUTORIAL.md) | [Español](./TUTORIAL.md)
 
-**Un tutorial practico: Transforma datos de usuario desordenados en registros limpios y estandarizados usando Claude Haiku y AWS**
+**Un tutorial práctico: Transforma datos de usuario desordenados en registros limpios y estandarizados usando Claude Haiku y AWS**
 
-## Lo Que Construiras
+## Lo Que Construirás
 
-Al final de este tutorial, tendras un sistema de normalizacion de datos serverless completamente funcional que:
+Al final de este tutorial, tendrás un sistema de normalización de datos serverless completamente funciónal que:
 
-- Limpia automaticamente datos de usuario desordenados (nombres, direcciones, ciudades)
-- Usa Claude 3 Haiku via AWS Bedrock para normalizacion inteligente
+- Limpia automáticamente datos de usuario desordenados (nombres, direcciónes, ciudades)
+- Usa Claude 3 Haiku via AWS Bedrock para normalización inteligente
 - Se ejecuta de forma programada (diaria) o bajo demanda via API
-- Valida la calidad usando analisis estadistico
+- Valida la calidad usando análisis estadístico
 - Cuesta solo ~$0.07 por cada 1,000 registros
 
-**Lo que aprenderas:**
+**Lo que aprenderás:**
 - Como integrar LLMs en pipelines ETL serverless
-- Ingenieria de prompts para tareas de normalizacion de datos
-- Construccion de sistemas auto-reparables con capas de post-procesamiento
-- Validacion estadistica para salidas de IA
-- Mejores practicas de AWS Bedrock y Lambda
+- Ingenieria de prompts para tareas de normalización de datos
+- Construcción de sistemas auto-reparables con capas de post-procesamiento
+- Validación estadística para salidas de IA
+- Mejores prácticas de AWS Bedrock y Lambda
 
-**Tiempo requerido:** 90 minutos (mas tiempo de despliegue)
+**Tiempo requerido:** 90 minutos (más tiempo de despliegue)
 
 **Costo:** ~$0.10 en cargos de AWS durante el tutorial (casi completamente elegible para capa gratuita)
 
 ## Lista de Prerequisitos
 
-Antes de comenzar, asegurate de tener:
+Antes de comenzar, asegúrate de tener:
 
 - [ ] **Cuenta AWS** con acceso a Bedrock
-  - Si aun no tienes acceso a Bedrock, [solicitalo aqui](https://console.aws.amazon.com/bedrock)
+  - Si aún no tienes acceso a Bedrock, [solicitalo aquí](https://console.aws.amazon.com/bedrock)
   - Especificamente, solicita acceso al modelo **Claude 3 Haiku**
-  - La aprobacion usualmente toma 5-10 minutos
+  - La aprobación usualmente toma 5-10 minutos
 
 - [ ] **AWS CLI** instalado y configurado
   ```bash
-  aws --version  # Deberia mostrar version 2.x
-  aws sts get-caller-identity  # Verificar que las credenciales funcionan
+  aws --version  # Debería mostrar version 2.x
+  aws sts get-caller-identity  # Verificar que las credenciales funciónan
   ```
 
 - [ ] **AWS SAM CLI** instalado
   ```bash
-  sam --version  # Deberia mostrar version 1.100+
+  sam --version  # Debería mostrar version 1.100+
   # Instalar en macOS: brew install aws-sam-cli
   # Instalar en Linux: pip install aws-sam-cli
   ```
 
 - [ ] **Node.js 22.x** o posterior
   ```bash
-  node --version  # Deberia mostrar v22.x o superior
+  node --version  # Debería mostrar v22.x o superior
   ```
 
-- [ ] **Comprension basica** de:
-  - Funciones AWS Lambda
+- [ ] **Comprensión básica** de:
+  - funciónes AWS Lambda
   - DynamoDB (base de datos NoSQL)
   - JSON y APIs REST
 
-Si te falta algun prerequisito, pausa aqui y configuralo primero.
+Si te falta algún prerequisito, pausa aquí y configuralo primero.
 
 ## Resultado Esperado
 
-Al final, tendras:
+Al final, tendrás:
 
-1. Una funcion Lambda que normaliza datos usando Claude Haiku
+1. Una función Lambda que normaliza datos usando Claude Haiku
 2. Una tabla DynamoDB almacenando datos originales y normalizados
-3. Un schedule de EventBridge activando normalizacion diaria
-4. Reportes estadisticos mostrando tasas de mejora
-5. Un patron listo para produccion que puedes adaptar a tus propios datos
+3. Un schedule de EventBridge activando normalización diaria
+4. Reportes estadísticos mostrando tasas de mejora
+5. Un patrón listo para producción que puedes adaptar a tus propios datos
 
 Comencemos!
 
@@ -95,7 +95,7 @@ echo "node_modules/" > .gitignore
 echo ".aws-sam/" >> .gitignore
 ```
 
-**Punto de verificacion:** Deberias tener una estructura de directorios como esta:
+**Punto de verificación:** Deberías tener una estructura de directorios como esta:
 ```
 llm-normalization-tutorial/
 ├── lambda/
@@ -125,7 +125,7 @@ aws dynamodb wait table-exists --table-name tutorial-leads --region us-east-1
 echo "Tabla creada exitosamente!"
 ```
 
-**Punto de verificacion:** Verifica que la tabla existe:
+**Punto de verificación:** Verifica que la tabla existe:
 ```bash
 aws dynamodb describe-table --table-name tutorial-leads --region us-east-1 --query 'Table.TableStatus'
 # Salida esperada: "ACTIVE"
@@ -133,7 +133,7 @@ aws dynamodb describe-table --table-name tutorial-leads --region us-east-1 --que
 
 ### Paso 1.3: Agrega Datos de Ejemplo
 
-Agreguemos algunos datos desordenados que necesitan normalizacion:
+Agreguemos algunos datos desordenados que necesitan normalización:
 
 ```bash
 # Crear un prospecto de ejemplo con datos desordenados
@@ -143,7 +143,7 @@ cat > test-events/sample-lead.json << 'EOF'
   "nombres": "JUAN CARLOS",
   "apellidos": "PEREZ GARCIA",
   "ciudad": "bogota",
-  "direccion": "CRA 15 NO 100 25",
+  "dirección": "CRA 15 NO 100 25",
   "nivelEducativo": "BACHILLERATO COMPLETO",
   "ocupacionActual": "ingeniero de sistemas",
   "empresa": "acme corp",
@@ -160,7 +160,7 @@ aws dynamodb put-item \
 echo "Datos de ejemplo insertados!"
 ```
 
-**Punto de verificacion:** Verifica que los datos estan en DynamoDB:
+**Punto de verificación:** Verifica que los datos estan en DynamoDB:
 ```bash
 aws dynamodb get-item \
   --table-name tutorial-leads \
@@ -168,7 +168,7 @@ aws dynamodb get-item \
   --region us-east-1
 ```
 
-Deberias ver tus datos desordenados en la respuesta.
+Deberías ver tus datos desordenados en la respuesta.
 
 ### Paso 1.4: Verifica el Acceso a Bedrock
 
@@ -198,18 +198,18 @@ aws bedrock-runtime invoke-model \
 cat response.json
 ```
 
-**Salida esperada:** Deberias ver JSON con la respuesta de Claude conteniendo "Hello" o similar.
+**Salida esperada:** Deberías ver JSON con la respuesta de Claude conteniendo "Hello" o similar.
 
-**Solucion de problemas:**
+**solución de problemas:**
 - **Error: AccessDeniedException** - Necesitas solicitar acceso a Bedrock en la Consola AWS
 - **Error: ResourceNotFoundException** - Verifica que el ID del modelo es correcto
 - **Error: ValidationException** - Verifica el formato de tu JSON
 
-Excelente trabajo! Tu entorno AWS esta listo. Construyamos la funcion Lambda.
+Excelente trabajo! Tu entorno AWS esta listo. Construyamos la función Lambda.
 
 ---
 
-## Parte 2: Construyendo el Lambda de Normalizacion (30 minutos)
+## Parte 2: Construyendo el Lambda de Normalización (30 minutos)
 
 ### Paso 2.1: Inicializa el Proyecto Lambda
 
@@ -241,7 +241,7 @@ Edita `package.json` para agregar el tipo de modulo:
 }
 ```
 
-**Punto de verificacion:** Ejecuta `npm install` y verifica que no hay errores.
+**Punto de verificación:** Ejecuta `npm install` y verifica que no hay errores.
 
 ### Paso 2.2: Crea el Modulo de Ingenieria de Prompts
 
@@ -255,10 +255,10 @@ Ahora, construyamoslo paso a paso. Abre `prompts.js` en tu editor:
 
 ```javascript
 /**
- * prompts.js - Ingenieria de prompts y post-procesamiento para normalizacion de datos
+ * prompts.js - Ingenieria de prompts y post-procesamiento para normalización de datos
  */
 
-// Mapeos de ciudades colombianas (expandirias esto en produccion)
+// Mapeos de ciudades colombianas (expandirias esto en producción)
 const CITY_MAPPINGS = {
   'bogota': 'Bogota D.C.',
   'bogotá': 'Bogota D.C.',
@@ -268,7 +268,7 @@ const CITY_MAPPINGS = {
 };
 
 /**
- * Genera el prompt de normalizacion para Claude
+ * Genera el prompt de normalización para Claude
  *
  * Aqui es donde ocurre la magia - le decimos a Claude exactamente lo que queremos
  */
@@ -278,17 +278,17 @@ export function generateNormalizationPrompt(fieldsData) {
     .map(([key, value]) => `- ${key}: "${value}"`)
     .join('\n');
 
-  // El prompt - nota lo especifico que somos!
+  // El prompt - nota lo específico que somos!
   return `Normaliza los siguientes campos de un formulario. Aplica estas reglas:
 
-## Reglas de Normalizacion
+## Reglas de Normalización
 
 ### Nombres y Apellidos
 - Capitalizar correctamente (primera letra mayuscula)
 - Eliminar espacios extras
 - Ejemplo: "JUAN CARLOS" -> "Juan Carlos"
 
-### Direccion
+### dirección
 - Formato: "Cra./Cl./Av. # - #"
 - Ejemplo: "CRA 15 NO 100 25" -> "Cra. 15 # 100 - 25"
 
@@ -376,7 +376,7 @@ function postProcessField(fieldName, value) {
     case 'apellidos':
       return capitalizeWords(processed);
 
-    case 'direccion':
+    case 'dirección':
       return normalizeAddress(processed);
 
     case 'nivelEducativo':
@@ -400,7 +400,7 @@ function capitalizeWords(str) {
 }
 
 /**
- * Normaliza el formato de direcciones colombianas
+ * Normaliza el formato de direcciónes colombianas
  *
  * IMPORTANTE: Nota el \.? - esto previene el bug de doble punto "Cra. ."
  */
@@ -441,15 +441,15 @@ export default {
 - Construimos un parser que maneja la respuesta de Claude (incluso si esta envuelta en markdown)
 - Agregamos post-procesamiento para asegurar formato consistente
 
-**Punto de verificacion:** Guarda el archivo. Lo probaremos pronto!
+**Punto de verificación:** Guarda el archivo. Lo probaremos pronto!
 
 ### Paso 2.3: Crea el Handler Lambda
 
-Ahora crea `index.js` - la funcion Lambda principal:
+Ahora crea `index.js` - la función Lambda principal:
 
 ```javascript
 /**
- * index.js - Handler Lambda principal para normalizacion de datos
+ * index.js - Handler Lambda principal para normalización de datos
  */
 
 import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
@@ -457,12 +457,12 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, ScanCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { generateNormalizationPrompt, parseNormalizationResponse } from './prompts.js';
 
-// Inicializar clientes AWS (fuera del handler para reutilizacion)
+// Inicializar clientes AWS (fuera del handler para reutilización)
 const bedrockClient = new BedrockRuntimeClient({ region: 'us-east-1' });
 const dynamoClient = new DynamoDBClient({ region: 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
 
-// Configuracion
+// configuración
 const LEADS_TABLE = process.env.LEADS_TABLE || 'tutorial-leads';
 const MODEL_ID = 'anthropic.claude-3-haiku-20240307-v1:0';
 
@@ -470,10 +470,10 @@ const MODEL_ID = 'anthropic.claude-3-haiku-20240307-v1:0';
  * Handler Lambda - esto es llamado por AWS
  */
 export const handler = async (event) => {
-  console.log('Iniciando normalizacion...');
+  console.log('Iniciando normalización...');
 
   try {
-    // Paso 1: Encontrar prospectos que necesitan normalizacion
+    // Paso 1: Encontrar prospectos que necesitan normalización
     const leads = await findLeadsToNormalize();
 
     if (leads.length === 0) {
@@ -502,13 +502,13 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: 'Normalizacion completa',
+        message: 'Normalización completa',
         results
       })
     };
 
   } catch (error) {
-    console.error('Normalizacion fallida:', error);
+    console.error('Normalización fallida:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message })
@@ -517,13 +517,13 @@ export const handler = async (event) => {
 };
 
 /**
- * Encuentra prospectos que necesitan normalizacion
+ * Encuentra prospectos que necesitan normalización
  * (En este tutorial, normalizamos si falta normalizedAt)
  */
 async function findLeadsToNormalize() {
   const params = {
     TableName: LEADS_TABLE,
-    ProjectionExpression: 'leadId, nombres, apellidos, ciudad, direccion, nivelEducativo, ocupacionActual, empresa, normalizedAt'
+    ProjectionExpression: 'leadId, nombres, apellidos, ciudad, dirección, nivelEducativo, ocupacionActual, empresa, normalizedAt'
   };
 
   const result = await docClient.send(new ScanCommand(params));
@@ -536,9 +536,9 @@ async function findLeadsToNormalize() {
  * Normaliza un solo prospecto usando Claude Haiku
  */
 async function normalizeLead(lead) {
-  // Paso 1: Preparar campos para normalizacion
+  // Paso 1: Preparar campos para normalización
   const fieldsToNormalize = [
-    'nombres', 'apellidos', 'ciudad', 'direccion',
+    'nombres', 'apellidos', 'ciudad', 'dirección',
     'nivelEducativo', 'ocupacionActual', 'empresa'
   ];
 
@@ -617,10 +617,10 @@ async function callClaude(prompt) {
 **Que acaba de pasar:**
 1. Configuramos clientes AWS para Bedrock y DynamoDB
 2. Creamos un handler que encuentra prospectos y los normaliza uno por uno
-3. Construimos una funcion `callClaude()` que se comunica con Bedrock
+3. Construimos una función `callClaude()` que se comunica con Bedrock
 4. Registramos el uso de tokens para rastrear costos
 
-**Punto de verificacion:** Guarda ambos archivos. Ahora probemoslo localmente!
+**Punto de verificación:** Guarda ambos archivos. Ahora probemoslo localmente!
 
 ### Paso 2.4: Crea un Template SAM
 
@@ -635,7 +635,7 @@ Crea `template.yaml`:
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Tutorial de Normalizacion de Datos con LLM
+Description: Tutorial de Normalización de Datos con LLM
 
 Resources:
   NormalizeLeadsFunction:
@@ -662,11 +662,11 @@ Resources:
 
 Outputs:
   FunctionArn:
-    Description: ARN de la funcion Lambda
+    Description: ARN de la función Lambda
     Value: !GetAtt NormalizeLeadsFunction.Arn
 ```
 
-**Punto de verificacion:** Valida el template:
+**Punto de verificación:** Valida el template:
 ```bash
 sam validate --lint
 # Esperado: "template.yaml is a valid SAM Template"
@@ -677,7 +677,7 @@ sam validate --lint
 Ahora la parte emocionante - probemoslo!
 
 ```bash
-# Construir la funcion Lambda
+# Construir la función Lambda
 sam build
 
 # Crear un evento de prueba
@@ -693,7 +693,7 @@ sam local invoke NormalizeLeadsFunction -e test-events/manual-invoke.json
 
 **Salida esperada:**
 ```
-Iniciando normalizacion...
+Iniciando normalización...
 Encontrados 1 prospectos para normalizar
 Tokens: { input: 245, output: 87 }
 ✓ Prospecto lead-001 normalizado
@@ -716,7 +716,7 @@ aws dynamodb get-item \
     "nombres": { "S": "Juan Carlos" },
     "apellidos": { "S": "Perez Garcia" },
     "ciudad": { "S": "Bogota D.C." },
-    "direccion": { "S": "Cra. 15 # 100 - 25" },
+    "dirección": { "S": "Cra. 15 # 100 - 25" },
     "nivelEducativo": { "S": "Bachiller" },
     "ocupacionActual": { "S": "Ingeniero De Sistemas" },
     "empresa": { "S": "Acme Corporation" }
@@ -725,15 +725,15 @@ aws dynamodb get-item \
 ```
 
 **Felicitaciones!** Acabas de normalizar tu primer prospecto usando Claude Haiku! Observa como:
-- "JUAN CARLOS" se convirtio en "Juan Carlos" (capitalizacion correcta)
+- "JUAN CARLOS" se convirtio en "Juan Carlos" (capitalización correcta)
 - "bogota" se convirtio en "Bogota D.C." (ciudad estandarizada)
-- "CRA 15 NO 100 25" se convirtio en "Cra. 15 # 100 - 25" (formato de direccion correcto)
+- "CRA 15 NO 100 25" se convirtio en "Cra. 15 # 100 - 25" (formato de dirección correcto)
 
 ---
 
 ## Parte 3: Entendiendo la Ingenieria de Prompts (20 minutos)
 
-Profundicemos en lo que hace que esto funcione. El prompt es la parte mas critica.
+Profundicemos en lo que hace que esto funcióne. El prompt es la parte máscritica.
 
 ### Ejercicio 3.1: Experimenta con Diferentes Prompts
 
@@ -744,7 +744,7 @@ cd lambda/normalize-leads
 touch test-prompts.js
 ```
 
-Agrega este codigo:
+Agrega este código:
 
 ```javascript
 import { generateNormalizationPrompt, parseNormalizationResponse } from './prompts.js';
@@ -778,7 +778,7 @@ Ejecutalo:
 node test-prompts.js
 ```
 
-**Observalo funcionar:** Veras el prompt exacto enviado a Claude y como se parsea la respuesta.
+**Observalo funciónar:** Veras el prompt exacto enviado a Claude y como se parsea la respuesta.
 
 ### Principios Clave de Ingenieria de Prompts
 
@@ -807,7 +807,7 @@ Esto le muestra a Claude el formato exacto que quieres.
 
 En `index.js`, configuramos `temperature: 0`. Esto hace que las salidas de Claude sean deterministicas (misma entrada = misma salida).
 
-**Pruebalo:** Cambia `temperature: 0` a `temperature: 1` y ejecuta la normalizacion dos veces. Veras resultados diferentes cada vez!
+**Pruebalo:** Cambia `temperature: 0` a `temperature: 1` y ejecuta la normalización dos veces. Veras resultados diferentes cada vez!
 
 ### Ejercicio 3.2: Agrega un Nuevo Tipo de Campo
 
@@ -841,7 +841,7 @@ case 'telefono':
   return normalizePhone(processed);
 ```
 
-Agrega la funcion:
+Agrega la función:
 ```javascript
 function normalizePhone(phone) {
   // Remover no-digitos
@@ -863,34 +863,34 @@ sam build
 sam local invoke NormalizeLeadsFunction -e test-events/manual-invoke.json
 ```
 
-**Punto de verificacion:** Verifica los datos normalizados de lead-002. Deberias ver:
+**Punto de verificación:** Verifica los datos normalizados de lead-002. Deberías ver:
 ```json
 "telefono": "+57 (300) 123-4567"
 ```
 
-**Que aprendiste:** Agregar nuevas reglas de normalizacion es solo:
+**Que aprendiste:** Agregar nuevas reglas de normalización es solo:
 1. Actualizar el prompt con ejemplos
 2. Agregar logica de post-procesamiento
 3. Probar!
 
 ---
 
-## Parte 4: Agregando Validacion Estadistica (15 minutos)
+## Parte 4: Agregando Validación Estadistica (15 minutos)
 
-Ahora midamos la calidad de nuestra normalizacion. Rastrearemos:
+Ahora midamos la calidad de nuestra normalización. Rastrearemos:
 - **Cobertura**: Cuantos campos fueron normalizados exitosamente?
 - **Tasa de Mejora**: Cuantos campos realmente cambiaron?
 
-### Paso 4.1: Agrega Recoleccion de Metricas
+### Paso 4.1: Agrega recolección de Metricas
 
-Actualiza `index.js` para recolectar metricas. Agrega despues del bucle de normalizacion:
+Actualiza `index.js` para recolectar metricas. Agrega despues del bucle de normalización:
 
 ```javascript
 // Despues del bucle for en handler()
 
-// Calcular estadisticas
+// Calcular estadísticas
 const stats = calculateStatistics(results);
-console.log('\n=== ESTADISTICAS DE NORMALIZACION ===');
+console.log('\n=== ESTADISTICAS DE normalización ===');
 console.log(`Cobertura: ${stats.coverage.toFixed(1)}%`);
 console.log(`Tasa de Mejora: ${stats.improvementRate.toFixed(1)}%`);
 console.log(`Intervalo de Confianza (95%): ${stats.confidenceInterval.lower.toFixed(1)}% - ${stats.confidenceInterval.upper.toFixed(1)}%`);
@@ -898,25 +898,25 @@ console.log(`Intervalo de Confianza (95%): ${stats.confidenceInterval.lower.toFi
 return {
   statusCode: 200,
   body: JSON.stringify({
-    message: 'Normalizacion completa',
+    message: 'Normalización completa',
     results,
     statistics: stats
   })
 };
 ```
 
-Agrega la funcion de estadisticas:
+Agrega la función de estadísticas:
 
 ```javascript
 /**
- * Calcula estadisticas de calidad de normalizacion
+ * Calcula estadísticas de calidad de normalización
  */
 function calculateStatistics(results) {
   const total = results.normalized + results.errors;
   const coverage = total > 0 ? (results.normalized / total) * 100 : 0;
 
   // Para este tutorial, asumiremos 70% de tasa de mejora (tipico para datos de usuario)
-  // En produccion, compararias campos originales vs normalizados
+  // En producción, compararias campos originales vs normalizados
   const improvementRate = 70.0;
 
   // Calcular intervalo de confianza del 95%
@@ -939,10 +939,10 @@ function calculateStatistics(results) {
 
 ### Paso 4.2: Prueba las Estadisticas
 
-Agrega mas prospectos de ejemplo:
+Agrega másprospectos de ejemplo:
 
 ```bash
-# Agregar 5 prospectos mas para mejores estadisticas
+# Agregar 5 prospectos máspara mejores estadísticas
 for i in {3..7}; do
   aws dynamodb put-item \
     --table-name tutorial-leads \
@@ -955,7 +955,7 @@ for i in {3..7}; do
 done
 ```
 
-Ejecuta la normalizacion de nuevo:
+Ejecuta la normalización de nuevo:
 ```bash
 sam build
 sam local invoke NormalizeLeadsFunction -e test-events/manual-invoke.json
@@ -963,7 +963,7 @@ sam local invoke NormalizeLeadsFunction -e test-events/manual-invoke.json
 
 **Salida esperada:**
 ```
-=== ESTADISTICAS DE NORMALIZACION ===
+=== ESTADISTICAS DE normalización ===
 Cobertura: 100.0%
 Tasa de Mejora: 70.0%
 Intervalo de Confianza (95%): 62.4% - 77.6%
@@ -976,16 +976,16 @@ Intervalo de Confianza (95%): 62.4% - 77.6%
 
 ### Entendiendo las Estadisticas
 
-**Por que son importantes las estadisticas?**
+**Por que son importantes las estadísticas?**
 
-Imagina que despliegas esto en produccion y un dia la tasa de mejora salta a 95%. Eso es una senal de alarma! Podria significar:
+Imagina que despliegas esto en producción y un dia la tasa de mejora salta a 95%. Eso es una senal de alarma! Podria significar:
 - Un bug en el post-procesamiento esta cambiando campos innecesariamente
 - La calidad de los datos de entrada se ha deteriorado
 - El comportamiento del LLM ha cambiado
 
-**Ejemplo real de produccion:** La implementacion original descubrio un "bug de doble punto" (Cra. -> Cra. .) porque la tasa de mejora para direcciones era sospechosamente alta en 65.7%. La investigacion revelo que una regex se estaba aplicando dos veces.
+**Ejemplo real de producción:** La implementación original descubrio un "bug de doble punto" (Cra. -> Cra. .) porque la tasa de mejora para direcciónes era sospechosamente alta en 65.7%. La investigacion revelo que una regex se estaba aplicando dos veces.
 
-**Ejercicio:** Intenta introducir un bug y ve si las estadisticas lo detectan.
+**Ejercicio:** Intenta introducir un bug y ve si las estadísticas lo detectan.
 
 En `prompts.js`, cambia temporalmente:
 ```javascript
@@ -997,13 +997,13 @@ A (sin el `\.?`):
 .replace(/\b(carrera|cra|cr)\s*/gi, 'Cra. ')
 ```
 
-Ahora ejecuta la normalizacion dos veces con los mismos datos. La tasa de mejora permanecera alta en la segunda ejecucion porque las direcciones se estan "normalizando" al mismo valor repetidamente, aunque ya estan correctas!
+Ahora ejecuta la normalización dos veces con los mismos datos. La tasa de mejora permanecera alta en la segunda ejecución porque las direcciónes se estan "normalizando" al mismo valor repetidamente, aúnque ya estan correctas!
 
-Asi es como las estadisticas te ayudan a detectar bugs.
+Asi es como las estadísticas te ayudan a detectar bugs.
 
 ---
 
-## Parte 5: Desplegando a Produccion (10 minutos)
+## Parte 5: Desplegando a producción (10 minutos)
 
 Ahora despleguemos esto a AWS de verdad.
 
@@ -1023,14 +1023,14 @@ sam deploy --guided
 ```
 
 Esto:
-1. Empaquetara tu funcion Lambda
+1. Empaquetara tu función Lambda
 2. La subira a S3
 3. Creara un stack de CloudFormation
 4. Desplegara el Lambda con todos los permisos
 
 **Espera el despliegue** (toma 2-3 minutos).
 
-**Punto de verificacion:** Deberias ver:
+**Punto de verificación:** Deberías ver:
 ```
 Successfully created/updated stack - llm-normalization-tutorial in us-east-1
 ```
@@ -1038,7 +1038,7 @@ Successfully created/updated stack - llm-normalization-tutorial in us-east-1
 ### Paso 5.2: Prueba el Lambda Desplegado
 
 ```bash
-# Invocar la funcion desplegada
+# Invocar la función desplegada
 aws lambda invoke \
   --function-name tutorial-normalize-leads \
   --payload '{"forceAll": true}' \
@@ -1052,15 +1052,15 @@ cat response.json
 ```json
 {
   "statusCode": 200,
-  "body": "{\"message\":\"Normalizacion completa\",\"results\":{\"normalized\":7,\"errors\":0}}"
+  "body": "{\"message\":\"Normalización completa\",\"results\":{\"normalized\":7,\"errors\":0}}"
 }
 ```
 
-**Felicitaciones!** Tu Lambda ahora esta corriendo en produccion!
+**Felicitaciones!** Tu Lambda ahora esta corriendo en producción!
 
 ### Paso 5.3: Agrega un Schedule (EventBridge)
 
-Hagamos que se ejecute automaticamente cada dia a las 2 AM.
+Hagamos que se ejecute automáticamente cada dia a las 2 AM.
 
 Actualiza `template.yaml` para agregar un evento:
 
@@ -1075,7 +1075,7 @@ NormalizeLeadsFunction:
         Properties:
           Schedule: cron(0 7 * * ? *)  # 7 AM UTC = 2 AM COT
           Name: daily-normalization
-          Description: Ejecutar normalizacion diaria
+          Description: Ejecutar normalización diaria
           Enabled: true
 ```
 
@@ -1085,7 +1085,7 @@ sam build
 sam deploy
 ```
 
-**Punto de verificacion:** Verifica el schedule:
+**Punto de verificación:** Verifica el schedule:
 ```bash
 aws events list-rules --region us-east-1 | grep daily-normalization
 ```
@@ -1102,15 +1102,15 @@ aws logs tail /aws/lambda/tutorial-normalize-leads --follow
 
 **Que veras:**
 - Uso de tokens (para rastreo de costos)
-- Progreso de normalizacion
-- Salida de estadisticas
+- Progreso de normalización
+- Salida de estadísticas
 - Cualquier error
 
-**Consejo pro:** Configura Alarmas de CloudWatch para errores:
+**Consejo pro:** Configura Alarmásde CloudWatch para errores:
 ```bash
 aws cloudwatch put-metric-alarm \
   --alarm-name normalization-errors \
-  --alarm-description "Alerta en fallos de normalizacion" \
+  --alarm-description "Alerta en fallos de normalización" \
   --metric-name Errors \
   --namespace AWS/Lambda \
   --statistic Sum \
@@ -1129,7 +1129,7 @@ Ahora es momento de ser creativo y extender lo que construiste!
 
 ### Ejercicio 6.1: Agrega Soporte para Campos de Lista
 
-**Desafio:** Normaliza una lista de lenguajes de programacion.
+**Desafio:** Normaliza una lista de lenguajes de programación.
 
 **Datos de ejemplo:**
 ```
@@ -1140,7 +1140,7 @@ Normalizado: ["Python", "JavaScript", "React"]
 **Pistas:**
 1. Agrega al prompt:
 ```
-### Lenguajes de Programacion (lista separada por comas)
+### Lenguajes de programación (lista separada por comas)
 - Capitalizar correctamente cada lenguaje
 - Separar por comas
 - Ejemplo: "python, JAVASCRIPT" -> "Python, JavaScript"
@@ -1148,7 +1148,7 @@ Normalizado: ["Python", "JavaScript", "React"]
 
 2. Agrega post-procesamiento:
 ```javascript
-case 'lenguajesProgramacion':
+case 'lenguajesprogramación':
   return value.split(',').map(lang => capitalizeWords(lang.trim())).join(', ');
 ```
 
@@ -1159,41 +1159,41 @@ aws dynamodb put-item \
   --item '{
     "leadId": {"S": "lead-008"},
     "nombres": {"S": "ANA GOMEZ"},
-    "lenguajesProgramacion": {"S": "python, JAVASCRIPT, react js"}
+    "lenguajesprogramación": {"S": "python, JAVASCRIPT, react js"}
   }' \
   --region us-east-1
 ```
 
 **Resultado esperado:**
 ```json
-"lenguajesProgramacion": "Python, Javascript, React Js"
+"lenguajesprogramación": "Python, Javascript, React Js"
 ```
 
 ### Ejercicio 6.2: Detecta Errores Sistematicos
 
-**Desafio:** Usa estadisticas para detectar cuando la normalizacion se comporta incorrectamente.
+**Desafio:** Usa estadísticas para detectar cuando la normalización se comporta incorrectamente.
 
-**Configuracion:** Rompe intencionalmente el normalizador de direcciones:
+**configuración:** Rompe intencionalmente el normalizador de direcciónes:
 
 En `prompts.js`, cambia:
 ```javascript
 function normalizeAddress(address) {
   return address
     .replace(/\b(carrera|cra|cr)\.?\s*/gi, 'XXXX ')  // Bug intencional
-    // ... resto de la funcion
+    // ... resto de la función
 }
 ```
 
 **Tarea:**
-1. Ejecuta normalizacion en todos los prospectos
-2. Inspecciona manualmente 5 direcciones en DynamoDB
+1. Ejecuta normalización en todos los prospectos
+2. Inspecciona manualmente 5 direcciónes en DynamoDB
 3. Calcula que porcentaje tienen "XXXX" en ellas
 4. Si >10% estan rotas, detectaste un bug!
 
-**Aprendizaje:** En produccion, automatizarias esta verificacion:
+**Aprendizaje:** En producción, automatizarias esta verificación:
 ```javascript
-// Despues de normalizacion
-const addresses = results.details.map(r => r.normalizedData?.direccion).filter(Boolean);
+// Despues de normalización
+const addresses = results.details.map(r => r.normalizedData?.dirección).filter(Boolean);
 const brokenAddresses = addresses.filter(addr => addr.includes('XXXX')).length;
 const breakageRate = (brokenAddresses / addresses.length) * 100;
 
@@ -1209,7 +1209,7 @@ if (breakageRate > 10) {
 **Actual:** 10 prospectos = 10 llamadas API a Bedrock
 **Optimizado:** 10 prospectos = 1 llamada API a Bedrock
 
-**Implementacion:**
+**implementación:**
 
 1. Actualiza `generateNormalizationPrompt` para aceptar multiples prospectos:
 ```javascript
@@ -1235,9 +1235,9 @@ Formato de retorno: [{"id": 0, "normalized": {...}}, {"id": 1, "normalized": {..
 
 ---
 
-## Parte 7: Guia de Solucion de Problemas
+## Parte 7: Guia de solución de Problemas
 
-Problemas comunes y como solucionarlos.
+Problemáscomunes y como soluciónarlos.
 
 ### Problema 1: "AccessDeniedException" de Bedrock
 
@@ -1246,7 +1246,7 @@ Problemas comunes y como solucionarlos.
 User: arn:aws:sts::123456789012:assumed-role/... is not authorized to perform: bedrock:InvokeModel
 ```
 
-**Solucion:**
+**solución:**
 1. Verifica que el acceso a Bedrock esta habilitado:
 ```bash
 aws bedrock list-foundation-models --region us-east-1
@@ -1268,7 +1268,7 @@ aws bedrock list-foundation-models --region us-east-1
 Error: Respuesta vacia de Claude
 ```
 
-**Solucion:**
+**solución:**
 1. Verifica que estas usando el ID de modelo correcto:
 ```javascript
 const MODEL_ID = 'anthropic.claude-3-haiku-20240307-v1:0';
@@ -1295,14 +1295,14 @@ console.log('Respuesta cruda de Bedrock:', JSON.stringify(responseBody, null, 2)
 Error parseando respuesta: Unexpected token
 ```
 
-**Solucion:**
+**solución:**
 Claude podria estar retornando texto fuera del JSON. Actualiza el parser:
 
 ```javascript
 // En parseNormalizationResponse
 console.log('Respuesta de Claude:', responseText);
 
-// Intenta multiples patrones de extraccion
+// Intenta multiples patrónes de extraccion
 const patterns = [
   /```json\s*([\s\S]*?)\s*```/,
   /```\s*([\s\S]*?)\s*```/,
@@ -1323,9 +1323,9 @@ for (const pattern of patterns) {
 
 ### Problema 4: Alto Costo / Uso de Tokens
 
-**Problema:** Tu normalizacion cuesta mas de lo esperado.
+**Problema:** Tu normalización cuesta másde lo esperado.
 
-**Solucion:**
+**solución:**
 
 1. Verifica el uso de tokens en logs:
 ```bash
@@ -1336,19 +1336,19 @@ aws logs filter-pattern "Tokens:" \
 
 2. Si los tokens de entrada son altos:
    - Acorta tu prompt (elimina ejemplos innecesarios)
-   - Elimina campos que no necesitan normalizacion
+   - Elimina campos que no necesitan normalización
 
 3. Si los tokens de salida son altos:
-   - Usa un prompt mas estricto: "Solo retorna campos cambiados"
+   - Usa un prompt másestricto: "Solo retorna campos cambiados"
    - Verifica que Claude no esta retornando explicaciones
 
 4. Habilita procesamiento por lotes (Ejercicio 6.3) para reducir llamadas API.
 
-### Problema 5: Resultados de Normalizacion Inconsistentes
+### Problema 5: Resultados de Normalización Inconsistentes
 
 **Problema:** La misma entrada produce diferentes salidas.
 
-**Solucion:**
+**solución:**
 
 1. Verifica `temperature: 0`:
 ```javascript
@@ -1375,23 +1375,23 @@ function postProcessField(fieldName, value) {
 
 ## Lo Que Lograste
 
-Felicitaciones! Construiste un sistema completo de normalizacion de datos con LLM. Repasemos lo que aprendiste:
+Felicitaciones! Construiste un sistema completo de normalización de datos con LLM. Repasemos lo que aprendiste:
 
 ### Habilidades Tecnicas Adquiridas
 
-- **Integracion con AWS Bedrock**: Llamaste a Claude Haiku via la API de AWS Bedrock
-- **Ingenieria de Prompts**: Creaste prompts efectivos para normalizacion de datos
+- **integración con AWS Bedrock**: Llamaste a Claude Haiku via la API de AWS Bedrock
+- **Ingenieria de Prompts**: Creaste prompts efectivos para normalización de datos
 - **Pipelines de Post-Procesamiento**: Construiste una capa auto-reparable para corregir inconsistencias del LLM
-- **Validacion Estadistica**: Mediste calidad usando intervalos de confianza
-- **Arquitectura Serverless**: Desplegaste una funcion Lambda lista para produccion
+- **Validación Estadistica**: Mediste calidad usando intervalos de confianza
+- **Arquitectura Serverless**: Desplegaste una función Lambda lista para producción
 - **IaC con SAM**: Usaste infraestructura-como-codigo para despliegues repetibles
 
-### Patron Listo para Produccion
+### Patron Listo para producción
 
-Ahora tienes un patron reutilizable para:
+Ahora tienes un patrón reutilizable para:
 - Normalizar datos de formularios enviados por usuarios
 - Limpiar datos para analitica y reportes
-- Preparar datos para sistemas de IA downstream
+- Preparar datos para sistemásde IA downstream
 - Construir pipelines ETL con inteligencia LLM
 
 ### Comprension de Costos
@@ -1408,7 +1408,7 @@ Compara con ingreso manual de datos: $75 por 1,000 registros (a $15/hora).
 
 ## Proximos Pasos
 
-Listo para llevar esto mas lejos?
+Listo para llevar esto máslejos?
 
 ### 1. Adapta a Tus Datos
 
@@ -1420,33 +1420,33 @@ Reemplaza los campos del formulario colombiano con los tuyos:
 
 ### 2. Agrega Caracteristicas Avanzadas
 
-- **Recuperacion de errores**: Reintentar normalizaciones fallidas con backoff
-- **Deteccion de cambios**: Solo normalizar si los datos originales cambiaron
+- **Recuperacion de errores**: Reintentar normalizaciónes fallidas con backoff
+- **detección de cambios**: Solo normalizar si los datos originales cambiaron
 - **Pruebas A/B**: Comparar calidad y costo de Haiku vs Sonnet
 - **Multi-idioma**: Extender prompts para datos en otros idiomas
 
-### 3. Escala a Produccion
+### 3. Escala a producción
 
 - **Aumentar concurrencia**: Remover `ReservedConcurrentExecutions: 1`
-- **Agregar dead letter queue**: Capturar normalizaciones fallidas para revision
+- **Agregar dead letter queue**: Capturar normalizaciónes fallidas para revision
 - **Configurar monitoreo**: Dashboards de CloudWatch, alertas SNS
-- **Habilitar trazado X-Ray**: Depurar problemas de rendimiento
+- **Habilitar trazado X-Ray**: Depurar problemásde rendimiento
 
 ### 4. Explora el Patron Completo
 
-Lee la documentacion completa:
+Lee la documentación completa:
 - **ARQUITECTURA.md**: Diseno detallado del sistema
-- **VALIDACION-ESTADISTICA.md**: Metricas avanzadas de calidad
-- **LECCIONES-APRENDIDAS.md**: Insights de produccion y trampas
-- **ANALISIS-COSTOS.md**: Estrategias de optimizacion de costos
+- **validación-ESTADISTICA.md**: Metricas avanzadas de calidad
+- **LECCIONES-APRENDIDAS.md**: Insights de producción y trampas
+- **ANALISIS-COSTOS.md**: Estrategias de optimización de costos
 
 ---
 
 ## Recursos Adicionales
 
-### Enlaces de Documentacion
+### Enlaces de documentación
 
-- [Documentacion de AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
+- [documentación de AWS Bedrock](https://docs.aws.amazon.com/bedrock/)
 - [Guia de Ingenieria de Prompts de Claude](https://docs.anthropic.com/claude/docs/prompt-engineering)
 - [Guia del Desarrollador de AWS SAM](https://docs.aws.amazon.com/serverless-application-model/)
 - [Mejores Practicas de DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
@@ -1483,7 +1483,7 @@ aws cloudformation list-stacks --region us-east-1 --query 'StackSummaries[?Stack
 
 ## Comentarios y Preguntas
 
-Encontraste util este tutorial? Tienes sugerencias para mejoras?
+Encontraste útil este tutorial? Tienes sugerencias para mejoras?
 
 - Abre un issue en GitHub
 - Sígueme en Twitter/X: [@gabanox_](https://x.com/gabanox_)
@@ -1491,14 +1491,14 @@ Encontraste util este tutorial? Tienes sugerencias para mejoras?
 
 ---
 
-**Lo lograste!** Has construido exitosamente un pipeline de normalizacion de datos con LLM desde cero. Este patron esta probado en produccion y ha procesado miles de registros a escala.
+**Lo lograste!** Has construido exitosamente un pipeline de normalización de datos con LLM desde cero. Este patrón esta probado en producción y ha procesado miles de registros a escala.
 
 Ahora ve y construye algo increible con el!
 
 ---
 
 **Version del Tutorial:** 1.0
-**Ultima Actualizacion:** 24 de enero de 2026
+**Ultima actualización:** 24 de enero de 2026
 **Tiempo Estimado de Completado:** 90 minutos
 **Dificultad:** Intermedia
 **Costo AWS:** ~$0.10 (durante el tutorial)

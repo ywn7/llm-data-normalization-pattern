@@ -1,6 +1,6 @@
 # Guía de Implementación
 
-> **Idioma**: [English](../en/IMPLEMENTATION.md) | [Español](./IMPLEMENTACION.md)
+> **Idioma**: [English](../en/IMPLEMENTATION.md) | [Español](./implementación.md)
 
 **Guía paso a paso para implementar el Patrón ETL de Normalización de Datos con LLM**
 
@@ -156,12 +156,12 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, ScanCommand, UpdateCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { generateNormalizationPrompt, parseNormalizationResponse } from './prompts.js';
 
-// Inicializar clientes AWS (fuera del handler para reutilizacion de contenedor)
+// Inicializar clientes AWS (fuera del handler para reutilización de contenedor)
 const bedrockClient = new BedrockRuntimeClient({ region: process.env.AWS_REGION || 'us-east-1' });
 const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION || 'us-east-1' });
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
 
-// Configuracion desde entorno
+// Configuración desde entorno
 const LEADS_TABLE = process.env.LEADS_TABLE;
 const CONFIG_TABLE = process.env.CONFIG_TABLE;
 const MODEL_ID = process.env.BEDROCK_MODEL_ID || 'anthropic.claude-3-haiku-20240307-v1:0';
@@ -170,13 +170,13 @@ const NORMALIZATION_TTL_DAYS = parseInt(process.env.NORMALIZATION_TTL_DAYS || '7
 const MAX_LEADS_PER_RUN = parseInt(process.env.MAX_LEADS_PER_RUN || '50', 10);
 
 /**
- * Configuracion por defecto (usada si CONFIG_TABLE no existe)
+ * Configuración por defecto (usada si CONFIG_TABLE no existe)
  */
 const DEFAULT_CONFIG = {
   fieldsToNormalize: [
     'nombres',
     'apellidos',
-    'direccion',
+    'dirección',
     'ciudad',
     'nivelEducativo',
     'ocupacionActual',
@@ -196,16 +196,16 @@ export const handler = async (event) => {
   const isScheduled = event.source === 'aws.events';
   const isManualTrigger = !isScheduled;
 
-  console.log(`Iniciando ejecucion de normalizacion ${isScheduled ? 'programada' : 'manual'}...`);
+  console.log(`Iniciando ejecución de normalización ${isScheduled ? 'programada' : 'manual'}...`);
 
   try {
-    // Cargar configuracion
+    // Cargar configuración
     const config = await loadConfig();
 
     if (!config.enabled) {
-      console.log('Normalizacion deshabilitada via configuracion');
+      console.log('Normalización deshabilitada via configuración');
       return successResponse({
-        message: 'Normalizacion esta deshabilitada',
+        message: 'Normalización está deshabilitada',
         enabled: false
       });
     }
@@ -217,13 +217,13 @@ export const handler = async (event) => {
       (event.body && JSON.parse(event.body).forceAll === true)
     );
 
-    // Encontrar prospectos que necesitan normalizacion
+    // Encontrar prospectos que necesitan normalización
     const leadsToNormalize = await findLeadsToNormalize(config, forceAll);
 
     if (leadsToNormalize.length === 0) {
-      console.log('No hay prospectos que requieran normalizacion');
+      console.log('No hay prospectos que requieran normalización');
       return successResponse({
-        message: 'No hay prospectos que requieran normalizacion',
+        message: 'No hay prospectos que requieran normalización',
         leadsProcessed: 0,
         duration: Date.now() - startTime
       });
@@ -280,17 +280,17 @@ export const handler = async (event) => {
         }
       }
 
-      // Pequena demora entre lotes para evitar limitacion de tasa
+      // Pequeña demora entre lotes para evitar limitación de tasa
       if (i + effectiveBatchSize < effectiveMaxLeads) {
         await sleep(500);
       }
     }
 
     const duration = Date.now() - startTime;
-    console.log(`Normalizacion completa: ${results.normalized} normalizados, ${results.errors} errores, ${duration}ms`);
+    console.log(`Normalización completa: ${results.normalized} normalizados, ${results.errors} errores, ${duration}ms`);
 
     return successResponse({
-      message: 'Normalizacion completa',
+      message: 'Normalización completa',
       ...results,
       duration,
       config: {
@@ -301,13 +301,13 @@ export const handler = async (event) => {
     });
 
   } catch (error) {
-    console.error('Ejecucion de normalizacion fallo:', error);
-    return errorResponse(500, `Error en normalizacion: ${error.message}`);
+    console.error('Ejecución de normalización fallo:', error);
+    return errorResponse(500, `Error en normalización: ${error.message}`);
   }
 };
 
 /**
- * Cargar configuracion de normalizacion desde DynamoDB
+ * Cargar configuración de normalización desde DynamoDB
  */
 async function loadConfig() {
   try {
@@ -325,15 +325,15 @@ async function loadConfig() {
     return DEFAULT_CONFIG;
   } catch (error) {
     // Si la tabla no existe o config no encontrada, usar valores por defecto
-    console.log('Usando configuracion por defecto:', error.message);
+    console.log('Usando configuración por defecto:', error.message);
     return DEFAULT_CONFIG;
   }
 }
 
 /**
- * Encontrar prospectos que necesitan normalizacion
+ * Encontrar prospectos que necesitan normalización
  * - normalizedAt esta ausente
- * - normalizedAt es mas antiguo que TTL
+ * - normalizedAt es más antiguo que TTL
  */
 async function findLeadsToNormalize(config, forceAll = false) {
   const ttlMs = (config.normalizationTTLDays || NORMALIZATION_TTL_DAYS) * 24 * 60 * 60 * 1000;
@@ -345,7 +345,7 @@ async function findLeadsToNormalize(config, forceAll = false) {
   do {
     const params = {
       TableName: LEADS_TABLE,
-      ProjectionExpression: 'leadId, nombres, apellidos, direccion, ciudad, nivelEducativo, ocupacionActual, empresa, normalizedAt, normalizedData',
+      ProjectionExpression: 'leadId, nombres, apellidos, dirección, ciudad, nivelEducativo, ocupacionActual, empresa, normalizedAt, normalizedData',
       Limit: 100
     };
 
@@ -376,7 +376,7 @@ async function findLeadsToNormalize(config, forceAll = false) {
  * Normalizar un prospecto individual usando Claude Haiku
  */
 async function normalizeLead(lead, fieldsToNormalize) {
-  // Extraer solo los campos que necesitan normalizacion
+  // Extraer solo los campos que necesitan normalización
   const fieldsData = {};
   let hasDataToNormalize = false;
 
@@ -419,13 +419,13 @@ async function normalizeLead(lead, fieldsToNormalize) {
 }
 
 /**
- * Llamar a Claude Haiku para normalizacion
+ * Llamar a Claude Haiku para normalización
  */
 async function callClaude(prompt) {
   const requestBody = {
     anthropic_version: 'bedrock-2023-05-31',
     max_tokens: 1000,
-    temperature: 0, // Deterministico para normalizacion consistente
+    temperature: 0, // Determinístico para normalización consistente
     messages: [
       {
         role: 'user',
@@ -452,14 +452,14 @@ async function callClaude(prompt) {
 
   const responseText = responseBody.content?.[0]?.text;
   if (!responseText) {
-    throw new Error('Respuesta vacia de Claude');
+    throw new Error('Respuesta vacía de Claude');
   }
 
   return parseNormalizationResponse(responseText);
 }
 
 /**
- * Utilidad sleep para limitacion de tasa
+ * Utilidad sleep para limitación de tasa
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -502,13 +502,13 @@ Este es el archivo **más crítico** - contiene el template del prompt y el pipe
 
 ```javascript
 /**
- * Prompts de Normalizacion para Claude Haiku
+ * Prompts de Normalización para Claude Haiku
  *
- * Prompts especificos por campo optimizados para datos colombianos.
+ * Prompts específicos por campo optimizados para datos colombianos.
  */
 
 /**
- * Mapeos de nombres de ciudades colombianas para estandarizacion
+ * Mapeos de nombres de ciudades colombianas para estandarización
  */
 const CITY_MAPPINGS = {
   // Variantes de Bogota
@@ -527,54 +527,54 @@ const CITY_MAPPINGS = {
   'cali': 'Cali',
   'santiago de cali': 'Cali',
 
-  // Agregar mas ciudades segun sea necesario
+  // Agregar más ciudades según sea necesario
 };
 
 /**
- * Instituciones educativas conocidas para estandarizacion
+ * Instituciones educativas conocidas para estandarización
  */
 const INSTITUTION_PATTERNS = [
   { pattern: /sena|servicio nacional de aprendizaje/i, standard: 'SENA' },
   { pattern: /universidad nacional/i, standard: 'Universidad Nacional de Colombia' },
   { pattern: /u\s*nal|unal/i, standard: 'Universidad Nacional de Colombia' },
   { pattern: /universidad de los andes|uniandes/i, standard: 'Universidad de los Andes' },
-  // Agregar mas instituciones segun sea necesario
+  // Agregar más instituciones según sea necesario
 ];
 
 /**
- * Generar el prompt de normalizacion para Claude Haiku
+ * Generar el prompt de normalización para Claude Haiku
  */
 export function generateNormalizationPrompt(fieldsData) {
   const fieldsList = Object.entries(fieldsData)
     .map(([key, value]) => `- ${key}: "${value}"`)
     .join('\n');
 
-  return `Normaliza los siguientes campos de un formulario de inscripcion en Colombia. Aplica estas reglas:
+  return `Normaliza los siguientes campos de un formulario de inscripción en Colombia. Aplica estas reglas:
 
-## Reglas de Normalizacion
+## Reglas de Normalización
 
 ### Nombres y Apellidos
-- Capitalizar correctamente (primera letra mayuscula)
+- Capitalizar correctamente (primera letra mayúscula)
 - Eliminar espacios extras
 - Mantener tildes y caracteres especiales
 - Ejemplo: "JUAN CARLOS PEREZ" -> "Juan Carlos Perez"
 
-### Direccion
-- Formato estandar colombiano: "Calle/Carrera/Avenida # - #"
+### Dirección
+- Formato estándar colombiano: "Calle/Carrera/Avenida # - #"
 - Abreviaturas: Cra., Cl., Av., Tr., Dg.
 - Ejemplo: "CRA 15 NO 100 25" -> "Cra. 15 # 100 - 25"
 
 ### Ciudad
 - Usar nombre oficial de la ciudad
 - Bogota siempre como "Bogota D.C."
-- Remover "Colombia" si esta incluido
+- Remover "Colombia" si está incluido
 - Ejemplo: "bogota colombia" -> "Bogota D.C."
 
 ### Nivel Educativo
 - Estandarizar a: Primaria, Bachiller, Tecnico, Tecnologo, Profesional, Especialista, Magister, Doctorado
 - Ejemplo: "BACHILLERATO COMPLETO" -> "Bachiller"
 
-### Ocupacion/Empresa
+### Ocupación/Empresa
 - Capitalizar correctamente
 - Eliminar espacios extras
 - Estandarizar nombres conocidos (SENA, universidades)
@@ -585,24 +585,24 @@ ${fieldsList}
 
 ## Formato de Respuesta
 
-Responde UNICAMENTE con un JSON valido:
+Responde UNICAMENTE con un JSON válido:
 
 {
   "campo1": "valor normalizado",
   "campo2": "valor normalizado"
 }
 
-Solo incluye campos que fueron modificados. Si un campo ya esta correctamente formateado, omitelo del JSON.`;
+Solo incluye campos que fueron modificados. Si un campo ya está correctamente formateado, omitelo del JSON.`;
 }
 
 /**
- * Parsear y validar respuesta de normalizacion de Claude
+ * Parsear y validar respuesta de normalización de Claude
  */
 export function parseNormalizationResponse(responseText) {
-  // Extraer JSON de la respuesta (manejar posibles bloques de codigo markdown)
+  // Extraer JSON de la respuesta (manejar posibles bloques de código markdown)
   let jsonStr = responseText;
 
-  // Remover bloques de codigo markdown si estan presentes
+  // Remover bloques de código markdown si estan presentes
   const jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
   if (jsonMatch) {
     jsonStr = jsonMatch[1];
@@ -627,14 +627,14 @@ export function parseNormalizationResponse(responseText) {
 
     for (const [key, value] of Object.entries(parsed)) {
       if (typeof value === 'string' && value.trim() !== '') {
-        // Aplicar normalizacion local adicional
+        // Aplicar normalización local adicional
         normalized[key] = postProcessField(key, value);
       }
     }
 
     return normalized;
   } catch (error) {
-    console.error('Fallo al parsear respuesta de normalizacion:', error.message);
+    console.error('Fallo al parsear respuesta de normalización:', error.message);
     console.error('Respuesta cruda:', responseText.substring(0, 500));
     throw new Error(`Error parseando respuesta: ${error.message}`);
   }
@@ -669,7 +669,7 @@ function postProcessField(fieldName, value) {
     case 'apellidos':
       return capitalizeWords(processed);
 
-    case 'direccion':
+    case 'dirección':
       return normalizeAddress(processed);
 
     case 'nivelEducativo':
@@ -694,9 +694,9 @@ function capitalizeWords(str) {
 }
 
 /**
- * Normalizar formato de direccion colombiana
+ * Normalizar formato de dirección colombiana
  *
- * IMPORTANTE: Nota la verificacion de punto opcional (\.?) para prevenir bug de doble punto
+ * IMPORTANTE: Nota la verificación de punto opcional (\.?) para prevenir bug de doble punto
  */
 function normalizeAddress(address) {
   let normalized = address
@@ -712,7 +712,7 @@ function normalizeAddress(address) {
     .replace(/\bn[°o]\s*/gi, '# ')
     // Limpiar dobles puntos que pudieran haber pasado
     .replace(/\.\s*\./g, '.')
-    // Limpiar espacios multiples
+    // Limpiar espacios múltiples
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -720,7 +720,7 @@ function normalizeAddress(address) {
 }
 
 /**
- * Normalizar nivel educativo a valores estandar
+ * Normalizar nivel educativo a valores estándar
  */
 function normalizeEducationLevel(level) {
   const lowerLevel = level.toLowerCase();
@@ -734,7 +734,7 @@ function normalizeEducationLevel(level) {
   if (/maestr[ií]a|magister|master/i.test(lowerLevel)) return 'Magister';
   if (/doctor|phd/i.test(lowerLevel)) return 'Doctorado';
 
-  // Retornar original si no hay coincidencia (con capitalizacion correcta)
+  // Retornar original si no hay coincidencia (con capitalización correcta)
   return capitalizeWords(level);
 }
 
@@ -752,7 +752,7 @@ export default {
 import { generateNormalizationPrompt, parseNormalizationResponse } from '../prompts.js';
 
 describe('parseNormalizationResponse', () => {
-  test('parsea respuesta JSON valida', () => {
+  test('parsea respuesta JSON válida', () => {
     const response = '{"nombres": "Juan Carlos", "ciudad": "Bogota D.C."}';
     const result = parseNormalizationResponse(response);
 
@@ -760,12 +760,12 @@ describe('parseNormalizationResponse', () => {
     expect(result.ciudad).toBe('Bogota D.C.');
   });
 
-  test('maneja direccion con punto existente (previene bug ". .")', () => {
-    const response = '{"direccion": "Cra. 80 I # 51 - 09"}';
+  test('maneja dirección con punto existente (previene bug ". .")', () => {
+    const response = '{"dirección": "Cra. 80 I # 51 - 09"}';
     const result = parseNormalizationResponse(response);
 
-    expect(result.direccion).toBe('Cra. 80 I # 51 - 09');
-    expect(result.direccion).not.toContain('. .');
+    expect(result.dirección).toBe('Cra. 80 I # 51 - 09');
+    expect(result.dirección).not.toContain('. .');
   });
 
   test('normaliza nombres de ciudades', () => {
@@ -941,7 +941,7 @@ La capa de post-procesamiento es **crítica** para calidad de producción. Aquí
 
 ### Problema: Inconsistencia del LLM
 
-Incluso a temperature=0, Claude podria retornar:
+Incluso a temperature=0, Claude podría retornar:
 - "Cra. 15" vs "Cra 15" (punto faltante)
 - "Juan Carlos" vs "Juan  Carlos" (espacio doble)
 - "Bogota" vs "Bogota" (tilde faltante)
@@ -960,10 +960,10 @@ Entrada → Claude (consciente del contexto) → Post-procesamiento (determinís
 - Siempre "Bogota D.C." para Bogotá
 - Siempre nombres capitalizados
 
-### Ejemplo: Normalización de Direcciones
+### Ejemplo: Normalización de Direcciónes
 
 ```javascript
-// LLM podria retornar cualquiera de estos:
+// LLM podría retornar cualquiera de estos:
 "Carrera 15 No 100-25"
 "Cra 15 # 100-25"
 "Cra. 15 No. 100-25"
@@ -1006,13 +1006,13 @@ Crear dataset de prueba con:
 
 ```javascript
 // Agregar aserciones en pruebas
-expect(result.direccion).not.toContain('. .');  // Sin dobles puntos
+expect(result.dirección).not.toContain('. .');  // Sin dobles puntos
 expect(result.ciudad).toMatch(/^[A-Z]/);        // Siempre capitalizado
 ```
 
 ## Próximos Pasos
 
-- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Medir calidad de normalización
+- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Medir calidad de normalización
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción
 - **[ANALISIS-COSTOS.md](./ANALISIS-COSTOS.md)**: Estrategias de optimización de costos
 

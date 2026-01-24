@@ -6,7 +6,7 @@
 
 ## Visión General del Sistema
 
-Este patrón implementa un pipeline ETL programado que normaliza datos enviados por usuarios usando Claude 3 Haiku a través de AWS Bedrock. La arquitectura prioriza eficiencia de costos, integridad de datos y simplicidad operacional.
+Este patrón implementa un pipeline ETL programado que normaliza datos enviados por usuarios usando Claude 3 Haiku a través de AWS Bedrock. La arquitectura prioriza eficiencia de costos, integridad de datos y simplicidad operaciónal.
 
 ## Diagrama de Arquitectura
 
@@ -215,7 +215,7 @@ Target: NormalizeLeadsFunction
     // Campos originales (entrada usuario - nunca modificados)
     nombres: String,
     apellidos: String,
-    direccion: String,
+    dirección: String,
     ciudad: String,
     nivelEducativo: String,
     ocupacionActual: String,
@@ -229,7 +229,7 @@ Target: NormalizeLeadsFunction
     normalizedData: {
       nombres: String,        // "Juan Carlos" vs "JUAN CARLOS"
       apellidos: String,      // "Perez Garcia" vs "PEREZ GARCIA"
-      direccion: String,      // "Cra. 15 # 100 - 25" vs "CRA 15 NO 100 25"
+      dirección: String,      // "Cra. 15 # 100 - 25" vs "CRA 15 NO 100 25"
       ciudad: String,         // "Bogota D.C." vs "bogota"
       nivelEducativo: String, // "Profesional" vs "profesional universitario"
       ocupacionActual: String,// "Ingeniero de Sistemas" vs "Ing. Sistemas"
@@ -268,7 +268,7 @@ Target: NormalizeLeadsFunction
   fieldsToNormalize: [
     "nombres",
     "apellidos",
-    "direccion",
+    "dirección",
     "ciudad",
     "nivelEducativo",
     "ocupacionActual",
@@ -283,7 +283,7 @@ Target: NormalizeLeadsFunction
 **Por qué config en DynamoDB en lugar de variables de entorno?**
 - **Sin redespliegue**: Actualizar config via API/Consola sin redesplegar Lambda
 - **Pista de auditoría**: DynamoDB rastrea quién cambió qué y cuándo
-- **Actualizaciones atómicas**: Más seguro que editar configuración Lambda
+- **actualizaciónes atómicas**: Más seguro que editar configuración Lambda
 - **Fallback**: Si la tabla no existe, Lambda usa valores predeterminados
 
 ### 5. AWS Bedrock: Claude 3 Haiku
@@ -315,7 +315,7 @@ Target: NormalizeLeadsFunction
     messages: [
       {
         role: "user",
-        content: prompt      // Ver IMPLEMENTACION.md para estructura de prompt
+        content: prompt      // Ver implementación.md para estructura de prompt
       }
     ]
   })
@@ -369,7 +369,7 @@ Usuario          EventBridge      Lambda             DynamoDB         Bedrock
  │                  │               │  {JSON normalizado}              │
  │                  │               │                   │              │
  │                  │               │  7. Post-procesar │              │
- │                  │               │     (correcciones │              │
+ │                  │               │     (correcciónes │              │
  │                  │               │      regex)       │              │
  │                  │               │                   │              │
  │                  │               │  8. Actualizar    │              │
@@ -470,7 +470,7 @@ try {
 **Fallos de DynamoDB**:
 - **Throttling**: Manejado por reintentos automáticos del AWS SDK (backoff exponencial)
 - **Item no encontrado**: Esperado - prospecto puede haber sido eliminado, omitir silenciosamente
-- **Conflictos de actualización**: Usar actualizaciones condicionales para prevenir sobrescrituras
+- **Conflictos de actualización**: Usar actualizaciónes condicionales para prevenir sobrescrituras
 
 **Timeouts de Lambda**:
 - **Actual**: 300s (5 min) - suficiente para 50 prospectos
@@ -568,7 +568,7 @@ Action: Notificación SNS + deshabilitar normalización
 ### Privacidad de Datos
 
 **Manejo de PII**:
-- PII original (nombres, direcciones) nunca enviada a logs de CloudWatch
+- PII original (nombres, direcciónes) nunca enviada a logs de CloudWatch
 - Solo `leadId` y nombres de campos registrados para depuración
 - Llamadas API Bedrock encriptadas en tránsito (TLS 1.2+)
 - Sin retención de datos por Bedrock (según política de Privacidad de Datos de AWS Bedrock)
@@ -608,7 +608,7 @@ export const handler = async (event) => {
 
 **Procesamiento por lotes**: 10 prospectos/llamada reduce overhead de API por 10x vs. llamadas individuales
 
-**Actualizaciones DynamoDB paralelas**: Usar `Promise.all()` para actualizar prospectos concurrentemente
+**actualizaciónes DynamoDB paralelas**: Usar `Promise.all()` para actualizar prospectos concurrentemente
 ```javascript
 await Promise.all(
   batch.map(lead => docClient.send(new UpdateCommand({...})))
@@ -625,12 +625,12 @@ await Promise.all(
 
 **Re-normalización basada en TTL**: Solo re-normalizar cada 7 días (vs. diario) reduce costos por 7x
 
-**Validación por muestreo**: Validar manualmente 5% de normalizaciones en lugar de 100%
+**Validación por muestreo**: Validar manualmente 5% de normalizaciónes en lugar de 100%
 
 ## Próximos Pasos
 
-- **[IMPLEMENTACION.md](./IMPLEMENTACION.md)**: Recorrido de código paso a paso
-- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Métricas de calidad y detección de bugs
+- **[implementación.md](./implementación.md)**: Recorrido de código paso a paso
+- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Métricas de calidad y detección de bugs
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción
 
 ---

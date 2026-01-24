@@ -1,12 +1,12 @@
-# Analisis y Optimizacion de Costos
+# Análisis y Optimización de Costos
 
 > **Idioma**: [English](../en/COST-ANALYSIS.md) | [Español](./ANALISIS-COSTOS.md)
 
-**Desglose detallado de costos de normalizacion LLM y estrategias para minimizar gastos**
+**Desglose detallado de costos de normalización LLM y estrategias para minimizar gastos**
 
 ## Resumen Ejecutivo
 
-**Costos de produccion** (652 prospectos, 4,280 campos normalizados):
+**Costos de producción** (652 prospectos, 4,280 campos normalizados):
 - **Total**: $0.043
 - **Por prospecto**: $0.000066 (6.6 centavos por 1,000 prospectos)
 - **Por campo**: $0.00001 (1 centavo por 1,000 campos)
@@ -43,7 +43,7 @@
 
 **Costo por prospecto**: $0.00043 / 10 = **$0.000043**
 
-**Costos reales de produccion** (652 prospectos):
+**Costos reales de producción** (652 prospectos):
 - **Lotes**: 65 lotes (652 / 10)
 - **Total tokens entrada**: ~84,500 tokens
 - **Total tokens salida**: ~5,200 tokens
@@ -51,16 +51,16 @@
 
 ### Costos de Lambda
 
-**Configuracion**:
+**Configuración**:
 - Memoria: 512 MB
-- Duracion: ~3 minutos para 50 prospectos
-- Ejecuciones: 1 por dia (programado)
+- Duración: ~3 minutos para 50 prospectos
+- ejecuciónes: 1 por dia (programado)
 
-**Calculo de costos**:
+**Cálculo de costos**:
 ```
-Ejecuciones mensuales: 30
-Duracion por ejecucion: 180s (3 min)
-GB-segundos: (512 MB / 1024) × 180s × 30 = 2,700 GB-s
+ejecuciónes mensuales: 30
+Duración por ejecución: 180s (3 min)
+GB-segúndos: (512 MB / 1024) × 180s × 30 = 2,700 GB-s
 
 Precios Lambda:
 - Primeros 400,000 GB-s/mes: GRATIS (bien dentro del tier gratuito)
@@ -73,11 +73,11 @@ Costo mensual Lambda: $0.00
 
 ### Costos de DynamoDB
 
-**Operaciones por normalizacion**:
+**operaciónes por normalización**:
 - **Lecturas**: 1 × `GetItem` (config) + 1 × `Scan` (prospectos) = ~100 unidades de lectura
 - **Escrituras**: 50 × `UpdateItem` (prospectos normalizados) = 50 unidades de escritura
 
-**Calculo de costos** (pay-per-request):
+**Cálculo de costos** (pay-per-request):
 ```
 Lecturas mensuales: 100 lecturas × 30 dias = 3,000 lecturas
 Escrituras mensuales: 50 escrituras × 30 dias = 1,500 escrituras
@@ -109,7 +109,7 @@ Costo mensual DynamoDB: $0.0026 (~$0.003)
 
 **Costo por prospecto**: $0.000069 (~7 centavos por 1,000 prospectos)
 
-## Comparacion de Costos: Alternativas
+## Comparación de Costos: Alternativas
 
 ### 1. Entrada Manual de Datos
 
@@ -125,7 +125,7 @@ Tiempo: 1,000 prospectos × 5 min = 5,000 min = 83.3 horas
 Costo: 83.3 horas × $15/hora = $1,250
 ```
 
-**Comparacion**: Este patron es **18,000x mas barato** que entrada manual.
+**Comparación**: Este patron es **18,000x mas barato** que entrada manual.
 
 ### 2. ETL Personalizado Basado en Reglas
 
@@ -134,18 +134,18 @@ Costo: 83.3 horas × $15/hora = $1,250
 **Costos**:
 - **Tiempo de desarrollo**: 2 semanas (80 horas) × $75/hora = $6,000
 - **Mantenimiento**: 4 horas/mes × $75/hora = $300/mes
-- **Runtime**: Lambda tier gratuito, DynamoDB minimo
+- **Runtime**: Lambda tier gratuito, DynamoDB mínimo
 
 **Costo primer ano**: $6,000 + ($300 × 12) = **$9,600**
 
-**Comparacion**: Este patron se paga solo en < 1 mes si:
+**Comparación**: Este patron se paga solo en < 1 mes si:
 - Valoras el tiempo de desarrollo
 - Necesitas flexibilidad (LLM se adapta a nuevos patrones sin cambios de codigo)
 - No quieres mantener cientos de reglas regex
 
 ### 3. Claude 3.5 Sonnet (LLM de Gama Alta)
 
-**Escenario**: Usar Sonnet en lugar de Haiku para normalizacion.
+**Escenario**: Usar Sonnet en lugar de Haiku para normalización.
 
 **Precios Sonnet**:
 - Entrada: $0.003 por 1,000 tokens (12x mas caro)
@@ -160,7 +160,7 @@ Diferencia: $0.726 mas por 1,000 prospectos (aumento 12x)
 ```
 
 **Cuando usar Sonnet**:
-- Razonamiento complejo requerido (no es el caso para normalizacion)
+- Razonamiento complejo requerido (no es el caso para normalización)
 - Mejora de calidad justifica costo 12x (raro para datos estructurados)
 
 **Recomendacion**: Quedarse con Haiku a menos que metricas de calidad caigan por debajo de 95%.
@@ -185,15 +185,15 @@ Diferencia: $0.026 ahorro por 1,000 prospectos (40% mas barato)
 - **Pros**: Mas barato, ampliamente disponible
 - **Contras**: Requiere API OpenAI (facturacion separada), formato API diferente, puede requerir ajuste de prompts
 
-**Recomendacion**: Si ya usas API OpenAI, considerar GPT-4o-mini. De lo contrario, la integracion de Haiku con AWS (misma facturacion, autenticacion IAM) supera ahorros marginales de costos.
+**Recomendacion**: Si ya usas API OpenAI, considerar GPT-4o-mini. De lo contrario, la integración de Haiku con AWS (misma facturacion, autenticacion IAM) supera ahorros marginales de costos.
 
-## Estrategias de Optimizacion de Costos
+## Estrategias de Optimización de Costos
 
 ### 1. Aumentar Tamano de Lote
 
 **Actual**: 10 prospectos por llamada API
 
-**Optimizacion**: 20 prospectos por llamada API
+**Optimización**: 20 prospectos por llamada API
 
 **Impacto**:
 ```
@@ -201,7 +201,7 @@ Actual: 1,000 prospectos → 100 lotes × $0.00043 = $0.043
 Optimizado: 1,000 prospectos → 50 lotes × $0.00055 = $0.028  (35% ahorro)
 ```
 
-**Por que funciona**: Overhead del prompt se amortiza sobre mas prospectos.
+**Por que funcióna**: Overhead del prompt se amortiza sobre mas prospectos.
 
 **Trade-offs**:
 - ⚠️ Mayor uso de memoria (512 MB → 768 MB podria ser necesario)
@@ -214,7 +214,7 @@ Optimizado: 1,000 prospectos → 50 lotes × $0.00055 = $0.028  (35% ahorro)
 
 **Actual**: 7 campos por prospecto
 
-**Optimizacion**: Normalizar solo campos de alta prioridad (4 campos)
+**Optimización**: Normalizar solo campos de alta prioridad (4 campos)
 
 **Impacto**:
 ```
@@ -223,7 +223,7 @@ Optimizado: 4 campos × 1,000 prospectos = 4,000 campos → $0.038  (42% ahorro)
 ```
 
 **Trade-offs**:
-- ⚠️ Normalizacion menos comprensiva
+- ⚠️ normalización menos comprensiva
 - ✅ Menores costos
 - ✅ Procesamiento mas rapido
 
@@ -234,26 +234,26 @@ Optimizado: 4 campos × 1,000 prospectos = 4,000 campos → $0.038  (42% ahorro)
 | Prioridad | Campos | Por Que |
 |----------|--------|-----|
 | Alta | ciudad, nivelEducativo, ocupacionActual | Alta varianza, impacta analitica |
-| Media | empresa, direccion | Varianza moderada, nice to have |
+| Media | empresa, dirección | Varianza moderada, nice to have |
 | Baja | nombres, apellidos | Baja varianza, mayormente formateados |
 
-### 3. Alargar TTL de Normalizacion
+### 3. Alargar TTL de normalización
 
 **Actual**: Re-normalizar cada 7 dias
 
-**Optimizacion**: Re-normalizar cada 30 dias
+**Optimización**: Re-normalizar cada 30 dias
 
 **Impacto**:
 ```
-Actual: 1,000 prospectos normalizados 4 veces/mes = 4,000 normalizaciones/mes
-Optimizado: 1,000 prospectos normalizados 1 vez/mes = 1,000 normalizaciones/mes
+Actual: 1,000 prospectos normalizados 4 veces/mes = 4,000 normalizaciónes/mes
+Optimizado: 1,000 prospectos normalizados 1 vez/mes = 1,000 normalizaciónes/mes
 
-Ahorro: 75% reduccion en costos de re-normalizacion
+Ahorro: 75% reduccion en costos de re-normalización
 ```
 
 **Trade-offs**:
 - ⚠️ Datos normalizados obsoletos si cambian prompts/modelos
-- ✅ Reduccion de costos 4x para re-normalizaciones
+- ✅ Reducción de costos 4x para re-normalizaciónes
 
 **Recomendacion**: TTL 7 dias para datos activos, TTL 30 dias para datos archivados.
 
@@ -261,7 +261,7 @@ Ahorro: 75% reduccion en costos de re-normalizacion
 
 **Escenario**: Muchos prospectos comparten la misma ciudad/empresa.
 
-**Optimizacion**: Cachear valores normalizados en memoria.
+**Optimización**: Cachear valores normalizados en memoria.
 
 ```javascript
 const cache = new Map();
@@ -281,8 +281,8 @@ function normalizeCityWithCache(city) {
 
 **Impacto** (asumiendo 50 ciudades unicas en 1,000 prospectos):
 ```
-Sin cache: 1,000 normalizaciones × $0.000066 = $0.066
-Con cache: 50 normalizaciones × $0.000066 = $0.0033
+Sin cache: 1,000 normalizaciónes × $0.000066 = $0.066
+Con cache: 50 normalizaciónes × $0.000066 = $0.0033
 Ahorro: 95% ($0.0627)
 ```
 
@@ -296,7 +296,7 @@ Ahorro: 95% ($0.0627)
 
 **Actual**: Siempre re-normalizar si TTL expiro
 
-**Optimizacion**: Hashear datos normalizados, omitir si sin cambios
+**Optimización**: Hashear datos normalizados, omitir si sin cambios
 
 ```javascript
 async function normalizeLead(lead) {
@@ -304,24 +304,24 @@ async function normalizeLead(lead) {
   const currentHash = hashFields(fieldsData);
 
   if (lead.normalizedHash === currentHash) {
-    console.log('Datos sin cambios, omitiendo normalizacion');
+    console.log('Datos sin cambios, omitiendo normalización');
     return { normalized: false, reason: 'Sin cambios' };
   }
 
-  // Proceder con normalizacion...
+  // Proceder con normalización...
 }
 ```
 
 **Impacto**:
 ```
-Escenario: 30% de prospectos no han cambiado desde ultima normalizacion
-Sin optimizacion: 1,000 normalizaciones
-Con optimizacion: 700 normalizaciones
+Escenario: 30% de prospectos no han cambiado desde ultima normalización
+Sin optimización: 1,000 normalizaciónes
+Con optimización: 700 normalizaciónes
 
 Ahorro: 30% reduccion de costos
 ```
 
-**Recomendacion**: Implementar si costos de re-normalizacion se vuelven significativos.
+**Recomendacion**: Implementar si costos de re-normalización se vuelven significativos.
 
 ## Proyecciones de Costos de Escalado
 
@@ -371,23 +371,23 @@ Ahorro: 30% reduccion de costos
 
 **A esta escala, considerar**:
 - Capacidad reservada para Lambda/DynamoDB (20-30% ahorro)
-- Capa de caching (Redis/ElastiCache) para reducir normalizaciones redundantes
+- Capa de caching (Redis/ElastiCache) para reducir normalizaciónes redundantes
 - Fine-tuning de modelo mas pequeno (Llama 3) para inferencia on-premise
 
-## Analisis de ROI
+## Análisis de ROI
 
-### Escenario: Institucion Educativa (Este Proyecto)
+### Escenario: Institución Educativa (Este Proyecto)
 
 **Contexto**: 100 estudiantes/mes se inscriben, 652 prospectos recolectados.
 
 **Costos**:
-- Normalizacion: $0.043 (unico para 652 prospectos)
+- normalización: $0.043 (unico para 652 prospectos)
 - Infraestructura: $0.003/mes (DynamoDB)
 
 **Beneficios**:
-- **Precision de reportes**: Datos limpios habilitan analitica precisa
+- **Precisión de reportes**: Datos limpios habilitan analitica precisa
 - **Ahorro de tiempo**: 5 horas/mes ahorradas en limpieza manual de datos (5 × $50/hora = $250/mes)
-- **Evaluacion IA**: Calidad de prompt mejorada para evaluacion IA de candidatos downstream
+- **evaluación IA**: Calidad de prompt mejorada para evaluación IA de candidatos downstream
 
 **ROI**: (250 - 0.043 - 0.003) / 0.046 = **5,400% ROI** (retorno 54x)
 
@@ -396,7 +396,7 @@ Ahorro: 30% reduccion de costos
 **Contexto**: SaaS B2B con datos de empresa/industria enviados por usuarios.
 
 **Costos**:
-- Normalizacion: $0.69/mes (10,000 usuarios × 3 campos)
+- normalización: $0.69/mes (10,000 usuarios × 3 campos)
 - Tiempo de desarrollador ahorrado: 20 horas/mes × $100/hora = $2,000/mes
 
 **ROI**: (2,000 - 0.69) / 0.69 = **289,800% ROI** (retorno 2,898x)
@@ -406,12 +406,12 @@ Ahorro: 30% reduccion de costos
 **Contexto**: Marketplace con descripciones de productos enviadas por vendedores.
 
 **Costos**:
-- Normalizacion: $10.10/mes (100,000 productos × 5 campos)
-- Reduccion de QA manual: 50 horas/mes × $75/hora = $3,750/mes
+- normalización: $10.10/mes (100,000 productos × 5 campos)
+- Reducción de QA manual: 50 horas/mes × $75/hora = $3,750/mes
 
 **ROI**: (3,750 - 10.10) / 10.10 = **37,000% ROI** (retorno 370x)
 
-## Planificacion de Presupuesto
+## Planificación de Presupuesto
 
 ### Template de Presupuesto Mensual
 
@@ -427,9 +427,9 @@ Total: $0.069 por 1,000 prospectos
 Factores de escala:
   × Numero de miles de prospectos
   × Promedio de campos por prospecto / 7 (linea base)
-  × Frecuencia de re-normalizacion / 30 dias (linea base)
+  × Frecuencia de re-normalización / 30 dias (linea base)
 
-Ejemplo (5,000 prospectos/mes, 10 campos, re-normalizacion semanal):
+Ejemplo (5,000 prospectos/mes, 10 campos, re-normalización semanal):
   Base: $0.069 × 5 = $0.345
   Ajuste de campos: × (10 / 7) = $0.493
   Ajuste de frecuencia: × (30 / 7) = $2.11/mes
@@ -465,7 +465,7 @@ CostAlarm:
       - !Ref AlertTopic
 ```
 
-## Conclusion
+## Conclusión
 
 **Este patron es extremadamente rentable**:
 - **$0.066 por 1,000 prospectos** (7 campos cada uno)
@@ -476,22 +476,22 @@ CostAlarm:
 **Principales impulsores de costos**:
 1. **Llamadas API Bedrock** (94% del costo total) → optimizar con lotes
 2. **Numero de campos** (lineal) → priorizar campos de alto valor
-3. **Frecuencia de re-normalizacion** (multiplicativo) → ajustar TTL segun volatilidad de datos
+3. **Frecuencia de re-normalización** (multiplicativo) → ajustar TTL según volatilidad de datos
 
-**Prioridades de optimizacion**:
-1. **Aumentar tamano de lote** (35% ahorro, riesgo minimo)
+**Prioridades de optimización**:
+1. **Aumentar tamaño de lote** (35% ahorro, riesgo mínimo)
 2. **Implementar caching** (hasta 95% ahorro para campos de baja cardinalidad)
-3. **Reducir frecuencia de re-normalizacion** (75% ahorro para datos estables)
+3. **Reducir frecuencia de re-normalización** (75% ahorro para datos estables)
 
-**Conclusion**: A $0.000066 por prospecto, este patron es una decision obvia para cualquier sistema con >100 prospectos/mes.
+**Conclusión**: A $0.000066 por prospecto, este patron es una decisión obvia para cualquier sistema con >100 prospectos/mes.
 
-## Proximos Pasos
+## Próximos Pasos
 
 - **[README.md](./README.md)**: Vision general del patron e inicio rapido
-- **[IMPLEMENTACION.md](./IMPLEMENTACION.md)**: Guia de configuracion paso a paso
-- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Medicion de calidad
-- **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de produccion
+- **[implementación.md](./implementación.md)**: Guia de configuración paso a paso
+- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Medicion de calidad
+- **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción
 
 ---
 
-**Ultima Actualizacion**: 24 de Enero, 2026
+**Última Actualización**: 24 de Enero, 2026

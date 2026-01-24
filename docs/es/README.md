@@ -18,7 +18,7 @@ Este patrón combina normalización basada en LLM con validación estadística y
 - **70.4% tasa de mejora** (3,013 de 4,280 campos requirieron cambios)
 - **99.2% cobertura** (4,246 de 4,280 campos normalizados exitosamente)
 - **Costo**: ~$0.04/mes para 650+ registros
-- **Detección de bugs**: El análisis estadístico descubrió un bug sistemático de "doble punto" que afectaba el 65.7% de las direcciones
+- **Detección de bugs**: El análisis estadístico descubrió un bug sistemático de "doble punto" que afectaba el 65.7% de las direcciónes
 
 ## Arquitectura General
 
@@ -61,7 +61,7 @@ Este patrón combina normalización basada en LLM con validación estadística y
 Este patrón es ideal para:
 
 1. **Datos de formularios enviados por usuarios** con campos de texto libre
-   - Nombres, direcciones, ciudades, empresas
+   - Nombres, direcciónes, ciudades, empresas
    - Niveles educativos, títulos de trabajo, certificaciones
    - Listas (lenguajes de programación, plataformas cloud)
 
@@ -87,9 +87,9 @@ Este patrón es ideal para:
 | Tu Objetivo | Empieza Con | Luego Lee |
 |-------------|-------------|-----------|
 | **Entender el patrón** (30 min) | Este README | [Arquitectura](./ARQUITECTURA.md) → [Análisis de Costos](./ANALISIS-COSTOS.md) |
-| **Implementarlo tú mismo** (2-3 hrs) | Este README | [Tutorial](./TUTORIAL.md) ⭐ → [Implementación](./IMPLEMENTACION.md) |
+| **Implementarlo tú mismo** (2-3 hrs) | Este README | [Tutorial](./TUTORIAL.md) ⭐ → [Implementación](./implementación.md) |
 | **Entender el "por qué"** (2 hrs) | Este README | directorio [explanation/](./explanation/) |
-| **Validar calidad** (1 hr) | Este README | [Validación Estadística](./VALIDACION-ESTADISTICA.md) |
+| **Validar calidad** (1 hr) | Este README | [Validación Estadística](./validación-ESTADISTICA.md) |
 | **Evitar errores** (30 min) | Este README | [Lecciones Aprendidas](./LECCIONES-APRENDIDAS.md) |
 
 ### Mapa de Documentación
@@ -114,7 +114,7 @@ EMPIEZA AQUÍ
         │                    │
         ▼                    ▼
 ┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│IMPLEMENTACION │    │  VALIDACION   │    │  LECCIONES    │
+│implementación │    │  validación   │    │  LECCIONES    │
 │ Paso a paso   │    │  ESTADISTICA  │    │  APRENDIDAS   │
 └───────────────┘    └───────────────┘    └───────────────┘
                              │
@@ -127,9 +127,9 @@ EMPIEZA AQUÍ
 
 ### Por Rol
 
-- **Desarrolladores**: README → [Tutorial](./TUTORIAL.md) → [Implementación](./IMPLEMENTACION.md)
+- **Desarrolladores**: README → [Tutorial](./TUTORIAL.md) → [Implementación](./implementación.md)
 - **Arquitectos**: README → [explanation/](./explanation/) → [Arquitectura](./ARQUITECTURA.md)
-- **Ingenieros de Datos**: README → [Validación Estadística](./VALIDACION-ESTADISTICA.md)
+- **Ingenieros de Datos**: README → [Validación Estadística](./validación-ESTADISTICA.md)
 - **Gerentes/PMs**: README → [Análisis de Costos](./ANALISIS-COSTOS.md)
 
 ### Diagramas Visuales
@@ -169,7 +169,7 @@ Ver [diagrams/](../../diagrams/) para archivos fuente y [sequences.md](../../dia
 - **Requisitos de alto volumen y baja latencia** (>10K registros/hora) - considere cachear valores normalizados
 - **Datos financieros de misión crítica** donde el determinismo es primordial - use validación basada en reglas
 - **Entornos offline/air-gapped** - sin acceso a internet para API Bedrock
-- **Normalización muy simple** (solo mayúsculas/minúsculas) - excesivo, use funciones básicas de string
+- **Normalización muy simple** (solo mayúsculas/minúsculas) - excesivo, use funciónes básicas de string
 
 ## Inicio Rápido
 
@@ -224,7 +224,7 @@ aws dynamodb get-item \
   "nombres": "Juan Carlos",
   "apellidos": "Perez Garcia",
   "ciudad": "Bogota D.C.",
-  "direccion": "Cra. 15 # 100 - 25",
+  "dirección": "Cra. 15 # 100 - 25",
   "nivelEducativo": "Profesional"
 }
 ```
@@ -249,14 +249,14 @@ aws dynamodb get-item \
   nombres: "JUAN CARLOS",            // Entrada original del usuario
   apellidos: "PEREZ GARCIA",
   ciudad: "bogota",
-  direccion: "CRA 15 NO 100 25",
+  dirección: "CRA 15 NO 100 25",
 
   normalizedAt: 1706000000000,       // Timestamp de última normalización
   normalizedData: {                  // Valores normalizados
     nombres: "Juan Carlos",
     apellidos: "Perez Garcia",
     ciudad: "Bogota D.C.",
-    direccion: "Cra. 15 # 100 - 25"
+    dirección: "Cra. 15 # 100 - 25"
   }
 }
 ```
@@ -270,7 +270,7 @@ aws dynamodb get-item \
   maxLeadsPerRun: 50,
   normalizationTTLDays: 7,           // Re-normalizar después de 7 días
   fieldsToNormalize: [
-    "nombres", "apellidos", "direccion",
+    "nombres", "apellidos", "dirección",
     "ciudad", "nivelEducativo"
   ]
 }
@@ -284,7 +284,7 @@ aws dynamodb get-item \
 
 ### Costos de Producción Reales
 
-**Escenario**: 652 prospectos, 7 campos cada uno (4,564 normalizaciones totales)
+**Escenario**: 652 prospectos, 7 campos cada uno (4,564 normalizaciónes totales)
 
 | Componente | Volumen | Costo |
 |-----------|--------|------|
@@ -307,7 +307,7 @@ aws dynamodb get-item \
 
 ## Características Clave
 
-### 1. Operaciones Idempotentes
+### 1. operaciónes Idempotentes
 - Usa timestamp `normalizedAt` para evitar procesamiento redundante
 - TTL configurable (predeterminado: 7 días) para re-normalización
 - Flag manual `forceAll` para re-normalizar todo el dataset
@@ -337,7 +337,7 @@ aws dynamodb get-item \
 ### Por Qué Validar Salidas de LLM Estadísticamente?
 
 Los LLMs son probabilísticos por naturaleza. Incluso a temperature=0, las salidas pueden variar debido a:
-- Actualizaciones del modelo
+- actualizaciónes del modelo
 - Cambios en ingeniería de prompts
 - Casos borde en datos de entrada
 - Bugs sistemáticos en post-procesamiento
@@ -347,7 +347,7 @@ Los LLMs son probabilísticos por naturaleza. Incluso a temperature=0, las salid
 ### Métricas Rastreadas
 
 1. **Cobertura**: % de campos normalizados exitosamente
-   - Fórmula: `(normalizaciones exitosas / total campos) × 100`
+   - Fórmula: `(normalizaciónes exitosas / total campos) × 100`
    - Objetivo: >95%
 
 2. **Tasa de Mejora**: % de campos que requirieron cambios
@@ -361,11 +361,11 @@ Los LLMs son probabilísticos por naturaleza. Incluso a temperature=0, las salid
 ### Ejemplo de Detección de Bugs: El Bug del Doble Punto
 
 **Descubrimiento**: El análisis estadístico en 652 prospectos reveló:
-- **Direcciones**: 65.7% tasa de mejora (428/652)
+- **direcciónes**: 65.7% tasa de mejora (428/652)
 - **Ciudades**: 55.8% tasa de mejora (364/652)
 - **Nombres**: 3.8% tasa de mejora (25/652)
 
-**Señal de alerta**: La tasa de mejora de direcciones era inusualmente alta para un campo de formato.
+**Señal de alerta**: La tasa de mejora de direcciónes era inusualmente alta para un campo de formato.
 
 **Investigación**: Revisión manual de muestras reveló:
 ```
@@ -381,13 +381,13 @@ Post-proceso:   "Cra. . 15 # 100 - 25"  ← Doble punto insertado!
 .replace(/\b(carrera|cra|cr|kra)\.?\s*/gi, 'Cra. ')
 ```
 
-**Resultado**: La tasa de mejora de direcciones bajó al esperado 15-20%, confirmando la corrección.
+**Resultado**: La tasa de mejora de direcciónes bajó al esperado 15-20%, confirmando la corrección.
 
 ## Próximos Pasos
 
 - **[ARQUITECTURA.md](./ARQUITECTURA.md)**: Profundización en diseño del sistema
-- **[IMPLEMENTACION.md](./IMPLEMENTACION.md)**: Guía de implementación paso a paso
-- **[VALIDACION-ESTADISTICA.md](./VALIDACION-ESTADISTICA.md)**: Detalles de metodología estadística
+- **[implementación.md](./implementación.md)**: Guía de implementación paso a paso
+- **[validación-ESTADISTICA.md](./validación-ESTADISTICA.md)**: Detalles de metodología estadística
 - **[LECCIONES-APRENDIDAS.md](./LECCIONES-APRENDIDAS.md)**: Perspectivas de producción y errores comunes
 - **[ANALISIS-COSTOS.md](./ANALISIS-COSTOS.md)**: Desglose detallado de costos y optimización
 
@@ -397,7 +397,7 @@ Este patrón fue extraído de una plataforma educativa en producción. Contribuc
 - Mejoras en ingeniería de prompts
 - Soporte para proveedores LLM adicionales (OpenAI, Cohere)
 - Soporte multi-idioma
-- Optimizaciones de rendimiento
+- optimizaciónes de rendimiento
 
 ## Licencia
 
