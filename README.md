@@ -1,5 +1,7 @@
 # LLM-Powered Data Normalization Pattern
 
+![LLM Data Normalization Banner](./assets/banner.png)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![AWS](https://img.shields.io/badge/AWS-Bedrock-orange)](https://aws.amazon.com/bedrock/)
 [![Claude](https://img.shields.io/badge/Claude-Haiku-blueviolet)](https://www.anthropic.com/claude)
