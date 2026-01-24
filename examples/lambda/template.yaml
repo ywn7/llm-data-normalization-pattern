@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: LLM-Powered Data Normalization Pattern - Example Lambda
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, prod]
+  LeadsTableName:
+    Type: String
+    Default: leads
+    Description: Name of the DynamoDB table containing leads
+
+Globals:
+  Function:
+    Timeout: 300
+    Runtime: nodejs22.x
+    MemorySize: 512
+    Architectures:
+      - arm64
+    Environment:
+      Variables:
+        LEADS_TABLE: !Ref LeadsTableName
+        AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+
+Resources:
+  # DynamoDB Table
+  LeadsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref LeadsTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: leadId
+          AttributeType: S
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: leadId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: EmailIndex
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  # Normalization Lambda
+  NormalizeLeadsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${Environment}-normalize-leads"
+      CodeUri: normalize-leads/
+      Handler: index.handler
+      Description: Normalizes lead data using Claude Haiku via AWS Bedrock
+      ReservedConcurrentExecutions: 1  # Prevent concurrent runs
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref LeadsTableName
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+      Events:
+        DailySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 7 * * ? *)  # 2 AM COT (UTC-5)
+            Description: Daily normalization trigger
+            Enabled: true
+
+  # CloudWatch Log Group
+  NormalizeLeadsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${Environment}-normalize-leads"
+      RetentionInDays: 14
+
+Outputs:
+  NormalizeLeadsFunctionArn:
+    Description: ARN of the normalization Lambda function
+    Value: !GetAtt NormalizeLeadsFunction.Arn
+
+  LeadsTableArn:
+    Description: ARN of the DynamoDB leads table
+    Value: !GetAtt LeadsTable.Arn
+
+  LeadsTableName:
+    Description: Name of the DynamoDB leads table
+    Value: !Ref LeadsTable

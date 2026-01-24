@@ -1,0 +1,3 @@
+# Python diagrams library for AWS architecture diagrams
+# Requires graphviz to be installed: brew install graphviz (macOS) or apt install graphviz (Ubuntu)
+diagrams>=0.24.0

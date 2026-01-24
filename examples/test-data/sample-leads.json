@@ -1,0 +1,87 @@
+{
+  "leads": [
+    {
+      "leadId": "test-001",
+      "email": "juan.perez@example.com",
+      "nombres": "JUAN CARLOS",
+      "apellidos": "PEREZ GARCIA",
+      "direccion": "CRA 15 NO 100 25",
+      "ciudad": "bogota",
+      "nivelEducativo": "bachiller",
+      "ocupacionActual": "ingeniero de sistemas",
+      "empresa": "acme corp"
+    },
+    {
+      "leadId": "test-002",
+      "email": "maria.lopez@example.com",
+      "nombres": "maria fernanda",
+      "apellidos": "lopez rodriguez",
+      "direccion": "calle 80 # 45-12 apto 301",
+      "ciudad": "MEDELLIN",
+      "nivelEducativo": "PROFESIONAL",
+      "ocupacionActual": "ANALISTA DE DATOS",
+      "empresa": "TECNOLOGIA S.A."
+    },
+    {
+      "leadId": "test-003",
+      "email": "carlos.martinez@example.com",
+      "nombres": "Carlos Andres",
+      "apellidos": "Martinez Gonzalez",
+      "direccion": "KR 7 # 32-16 OF 502",
+      "ciudad": "Bogotá D.C.",
+      "nivelEducativo": "Tecnologo",
+      "ocupacionActual": "desarrollador web",
+      "empresa": "startup xyz"
+    },
+    {
+      "leadId": "test-004",
+      "email": "ana.gomez@example.com",
+      "nombres": "ANA MARIA",
+      "apellidos": "gomez silva",
+      "direccion": "AV BOYACA 23 45",
+      "ciudad": "bogota dc",
+      "nivelEducativo": "ing sistemas",
+      "ocupacionActual": "QA Tester",
+      "empresa": "Quality Software SAS"
+    },
+    {
+      "leadId": "test-005",
+      "email": "pedro.sanchez@example.com",
+      "nombres": "pedro pablo",
+      "apellidos": "SANCHEZ RUIZ",
+      "direccion": "transversal 45 #12-34",
+      "ciudad": "cali",
+      "nivelEducativo": "tecnico en sistemas",
+      "ocupacionActual": "soporte tecnico",
+      "empresa": "help desk ltda"
+    }
+  ],
+  "expectedNormalized": [
+    {
+      "leadId": "test-001",
+      "nombres": "Juan Carlos",
+      "apellidos": "Pérez García",
+      "direccion": "Cra. 15 # 100 - 25",
+      "ciudad": "Bogotá D.C.",
+      "nivelEducativo": "Bachiller",
+      "ocupacionActual": "Ingeniero de Sistemas",
+      "empresa": "Acme Corp"
+    },
+    {
+      "leadId": "test-002",
+      "nombres": "María Fernanda",
+      "apellidos": "López Rodríguez",
+      "direccion": "Cl. 80 # 45 - 12 Apto 301",
+      "ciudad": "Medellín",
+      "nivelEducativo": "Profesional",
+      "ocupacionActual": "Analista de Datos",
+      "empresa": "Tecnología S.A."
+    }
+  ],
+  "metadata": {
+    "description": "Sample test data for LLM normalization pattern",
+    "language": "es-CO",
+    "fields": ["nombres", "apellidos", "direccion", "ciudad", "nivelEducativo", "ocupacionActual", "empresa"],
+    "totalRecords": 5
+  }
+}
